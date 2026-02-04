@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual Env
+venv/
+.venv/
+
+# Env vars
+.env
+.env.*
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# OS junk (macOS AppleDouble)
+.DS_Store
+._*
+**/._*
+
+# VSCode / IDE
+.vscode/
+.idea/
