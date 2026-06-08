@@ -5,9 +5,9 @@
 
 # 1. Project Overview
 
-The Beauty Salon Management System is a web-based application developed using Django to simplify appointment booking and customer management within a beauty salon environment.
+The Beauty Salon Management System is a web-based application developed using Django to simplify appointment booking, service management, staff management, and customer operations within a beauty salon environment.
 
-The system provides a complete customer booking workflow, beginning with authentication and ending with appointment confirmation, while maintaining a modular architecture that supports future expansion into staff management, scheduling, notifications, billing, and administrative operations.
+The system provides a complete customer booking workflow, beginning with authentication and ending with appointment confirmation, while maintaining a modular architecture that supports staff scheduling, notifications, billing, analytics, and future scalability.
 
 The project follows a modular design approach by separating business domains into independent Django applications.
 
@@ -18,9 +18,11 @@ The project follows a modular design approach by separating business domains int
 The primary objectives of the system are:
 
 - Simplify appointment booking for customers.
+- Organize salon services and categories.
+- Manage staff availability and service assignments.
 - Reduce manual scheduling operations.
-- Organize customer appointment records.
-- Provide a structured foundation for salon management.
+- Prevent booking conflicts.
+- Provide a scalable salon management foundation.
 - Support future integration with payment systems and SMS providers.
 - Deliver a modern and responsive user experience.
 
@@ -43,8 +45,6 @@ The primary objectives of the system are:
 
 # 4. System Architecture
 
-The project follows a modular architecture.
-
 ```text
 Beauty Salon Management System
 │
@@ -63,7 +63,7 @@ Beauty Salon Management System
 └── salon_project
 ```
 
-This structure improves maintainability and scalability.
+This modular architecture improves maintainability, scalability, and separation of concerns.
 
 ---
 
@@ -71,11 +71,11 @@ This structure improves maintainability and scalability.
 
 ## 5.1 Accounts Module
 
-Purpose:
+### Purpose
 
 Manage customer authentication and account access.
 
-Responsibilities:
+### Responsibilities
 
 - OTP generation
 - OTP verification
@@ -83,7 +83,7 @@ Responsibilities:
 - Session creation
 - Customer dashboard access
 
-Main Components:
+### Main Components
 
 ```text
 CustomUser
@@ -92,7 +92,7 @@ generate_otp()
 verify_otp()
 ```
 
-Current OTP Flow:
+### Authentication Flow
 
 ```text
 Customer enters phone number
@@ -108,69 +108,143 @@ Customer Dashboard
 
 ---
 
-## 5.2 Bookings Module
+## 5.2 Catalog Module
 
-Purpose:
+### Purpose
+
+Manage salon services and categories.
+
+### Models
+
+#### ServiceCategory
+
+```text
+id
+name
+description
+is_active
+created_at
+updated_at
+```
+
+#### Service
+
+```text
+id
+category_id
+name
+description
+price
+duration_minutes
+is_active
+created_at
+updated_at
+```
+
+### Responsibilities
+
+```text
+Service Management
+Pricing Management
+Service Categorization
+Duration Management
+```
+
+---
+
+## 5.3 Scheduling Module
+
+### Purpose
+
+Manage salon staff and service capabilities.
+
+### Models
+
+#### Staff
+
+```text
+id
+name
+phone
+is_active
+created_at
+updated_at
+```
+
+#### StaffService
+
+```text
+id
+staff_id
+service_id
+```
+
+### Responsibilities
+
+```text
+Staff Management
+Service Assignment
+Availability Planning
+Scheduling Foundation
+```
+
+---
+
+## 5.4 Bookings Module
+
+### Purpose
 
 Handle appointment booking operations.
 
-Responsibilities:
+### Models
 
-- Service booking
-- Date selection
-- Time selection
-- Appointment confirmation
-- Appointment cancellation
-- Appointment rescheduling
-
-Models:
-
-### TimeSlot
-
-Stores available appointment times.
-
-Fields:
+#### TimeSlot
 
 ```text
 id
 time
 ```
 
-### Booking
-
-Stores customer appointments.
-
-Fields:
+#### Booking
 
 ```text
 id
-user
-service
+user_id
 date
-time
-staff
+time_id
+staff_member_id
 status
+total_amount
+notes
 created_at
+updated_at
 ```
 
-Status Values:
+### Status Values
 
 ```text
 pending
 confirmed
 completed
 canceled
+no_show
+```
+
+#### BookingItem
+
+```text
+id
+booking_id
+service_id
+price_at_booking
+duration_at_booking
 ```
 
 ---
 
 # 6. Booking Workflow
 
-The booking process consists of multiple steps.
-
-## Step 1
-
-Service Selection
+## Step 1 — Service Selection
 
 ```text
 Customer
@@ -178,35 +252,23 @@ Customer
 Choose Service
 ```
 
-Examples:
-
-- Makeup
-- Hair Styling
-- Haircut
-- Pedicure & Manicure
-- Skin Care
-
----
-
-## Step 2
-
-Date and Time Selection
+## Step 2 — Date Selection
 
 ```text
 Customer
     ↓
-Select Date
-    ↓
-Select Time Slot
+Choose Date
 ```
 
-Available slots are retrieved from the TimeSlot model.
+## Step 3 — Time Slot Selection
 
----
+```text
+Customer
+    ↓
+Choose Time Slot
+```
 
-## Step 3
-
-Booking Confirmation
+## Step 4 — Booking Confirmation
 
 Customer reviews:
 
@@ -217,66 +279,57 @@ Time
 Phone Number
 ```
 
----
+## Step 5 — Booking Creation
 
-## Step 4
-
-Booking Creation
-
-System creates:
-
-```python
-Booking.objects.create(...)
+```text
+Booking
+    ↓
+BookingItem
 ```
 
-Appointment status becomes:
+Status:
 
 ```text
 confirmed
 ```
 
----
-
-## Step 5
-
-Booking Success Page
+## Step 6 — Booking Success Page
 
 Displays:
 
 ```text
-Booking ID
-Service
-Date
-Time
+Booking Information
+Service Details
+Appointment Date
+Appointment Time
 ```
 
 ---
 
 # 7. Customer Portal
 
-The customer dashboard allows users to manage appointments.
-
-Features:
+## Features
 
 ### Upcoming Appointment
 
 Displays:
 
 ```text
-Service
+Services
 Date
 Time
 Status
+Total Amount
 ```
 
-Actions:
+### Actions
 
 ```text
 Edit Booking
 Cancel Booking
 ```
 
-### Booking History
+### Appointment History
 
 Displays previous appointments.
 
@@ -284,9 +337,7 @@ Displays previous appointments.
 
 # 8. Staff Portal
 
-A dedicated staff interface has been prepared.
-
-Templates:
+### Templates
 
 ```text
 staff/base.html
@@ -297,66 +348,25 @@ staff/schedule.html
 staff/notifications.html
 ```
 
-Planned Features:
-
-- View assigned appointments
-- Manage schedules
-- Receive notifications
-- View profile information
-
----
-
-# 9. Catalog Module
-
-Purpose:
-
-Manage salon services.
-
-Current Status:
-
-Foundation prepared.
-
-Future Responsibilities:
+### Planned Features
 
 ```text
-Create Services
-Update Services
-Delete Services
-Service Pricing
-Service Categories
+Assigned Appointments
+Availability Management
+Schedule Control
+Notifications
+Performance Tracking
 ```
 
 ---
 
-# 10. Scheduling Module
+# 9. Notifications Center
 
-Purpose:
-
-Manage appointment scheduling.
-
-Current Status:
-
-Application structure prepared.
-
-Future Features:
-
-```text
-Automatic Scheduling
-Staff Availability
-Calendar Management
-Conflict Detection
-Shift Management
-```
-
----
-
-# 11. Notifications Center
-
-Purpose:
+### Purpose
 
 Centralized notification management.
 
-Planned Notifications:
+### Planned Notifications
 
 ```text
 Appointment Confirmation
@@ -368,17 +378,13 @@ Administrative Alerts
 
 ---
 
-# 12. Billing Module
+# 10. Billing Module
 
-Purpose:
+### Purpose
 
 Manage payments and invoices.
 
-Current Status:
-
-Application structure prepared.
-
-Future Features:
+### Future Features
 
 ```text
 Invoice Generation
@@ -390,30 +396,29 @@ Refund Management
 
 ---
 
-# 13. Control Panel
+# 11. Control Panel
 
-Purpose:
+### Purpose
 
 Administrative management.
 
-Planned Features:
+### Planned Features
 
 ```text
 Customer Management
 Service Management
+Category Management
 Staff Management
-Booking Oversight
-Reporting
+Booking Management
+Reports
 Analytics
 ```
 
 ---
 
-# 14. User Interface Design
+# 12. User Interface Design
 
-The system uses a unified visual identity.
-
-Design Characteristics:
+### Design Characteristics
 
 - RTL Arabic Support
 - Mobile Friendly
@@ -422,7 +427,7 @@ Design Characteristics:
 - Glassmorphism Components
 - Consistent Branding
 
-Primary Colors:
+### Primary Colors
 
 ```text
 #5A00E6
@@ -434,61 +439,138 @@ Primary Colors:
 
 ---
 
-# 15. Database Design
+# 13. Database Design
 
-Current Core Entities
+## Current Core Entities
 
 ```text
+ServiceCategory
+        │ 1
+        │
+        ▼
+      Service
+        ▲
+        │
+        │ M
+   StaffService
+        │
+        ▼
+      Staff
+
 CustomUser
-      │
+      │ 1
       │
       ▼
+    Booking
+      │ 1
+      │
+      ▼
+  BookingItem
+      │ M
+      │
+      ▼
+    Service
+
 Booking
-      │
-      │
-      ▼
-TimeSlot
+    │ M
+    │
+    ▼
+ TimeSlot
 ```
 
-ERD:
+---
+
+# 14. ERD
 
 ```text
 CustomUser
 -----------
-id
+id (PK)
 phone
 ...
 
-      1
-      │
-      │
-      ▼
+        1
+        │
+        ▼
 Booking
 -----------
-id
-service
+id (PK)
+user_id (FK)
 date
+time_id (FK)
+staff_member_id (FK)
 status
-time_id
-user_id
+total_amount
+notes
+created_at
+updated_at
 
-      ∞
-      │
-      │
-      ▼
+        1
+        │
+        ▼
+BookingItem
+-----------
+id (PK)
+booking_id (FK)
+service_id (FK)
+price_at_booking
+duration_at_booking
+
+        M
+        │
+        ▼
+Service
+-----------
+id (PK)
+category_id (FK)
+name
+price
+duration_minutes
+
+        M
+        │
+        ▼
+ServiceCategory
+-----------
+id (PK)
+name
+
+Staff
+-----------
+id (PK)
+name
+phone
+
+        M
+        │
+        ▼
+StaffService
+-----------
+id (PK)
+staff_id (FK)
+service_id (FK)
+
 TimeSlot
 -----------
-id
+id (PK)
 time
 ```
 
 ---
 
-# 16. Implemented Features
+# 15. Implemented Features
 
-Completed:
+### Completed
 
-✅ OTP Authentication (Demo)
+✅ OTP Authentication (Development Mode)
+
+✅ Service Categories
+
+✅ Service Catalog
+
+✅ Staff Management Foundation
+
+✅ Staff-Service Assignment
 
 ✅ Service Selection
 
@@ -510,87 +592,118 @@ Completed:
 
 ✅ Appointment Editing
 
+✅ BookingItem Architecture
+
+✅ Total Amount Tracking
+
 ✅ Responsive User Interface
 
 ✅ Modular Django Architecture
 
 ---
 
-# 17. Future Enhancements
+# 16. Future Enhancements
 
-Planned:
-
-### Authentication
+## Authentication
 
 - SMS Provider Integration
 - OTP Expiration Logic
 - Rate Limiting
 
-### Booking
+## Booking
 
-- Staff Assignment
-- Service Duration Management
-- Double Booking Prevention
+- Staff Selection
+- Conflict Detection
+- Multi-Service Booking UI
+- Service Duration Validation
 
-### Notifications
+## Notifications
 
 - SMS Reminders
 - Email Notifications
 - WhatsApp Integration
 
-### Billing
+## Billing
 
 - Payment Gateway Integration
 - Invoice Generation
 
-### Administration
+## Administration
 
 - Advanced Analytics
 - Reports Dashboard
 - Branch Management
 
-### Scalability
+## Scalability
 
 - PostgreSQL Migration
 - Redis Caching
-- API Development
+- REST API Development
+- React Frontend
 - Mobile Application Integration
 
 ---
 
-# 18. Engineering Evaluation
+# 17. Engineering Evaluation
 
-Current Project Classification:
+### Current Project Classification
 
 ```text
-Salon Appointment Booking System
+Salon Management System
 with
-Management System Foundation
+Appointment Booking Platform
 ```
 
-Project Maturity:
+### Project Maturity
 
 ```text
 Frontend UI/UX        █████████░ 90%
 Authentication        ███████░░░ 70%
-Booking Workflow      ████████░░ 80%
-Database Design       ██████░░░░ 60%
-Staff Management      ███░░░░░░░ 30%
+Booking Workflow      ████████░░ 85%
+Database Design       █████████░ 90%
+Service Catalog       ████████░░ 85%
+Staff Management      ██████░░░░ 60%
 Notifications         ██░░░░░░░░ 20%
 Billing               ██░░░░░░░░ 20%
-Administration        ██░░░░░░░░ 20%
+Administration        ███░░░░░░░ 30%
 ```
 
-Overall Progress:
+### Overall Progress
 
 ```text
-≈ 70% MVP Completion
+≈ 80% MVP Completion
+```
+
+---
+
+# 18. Engineering Assessment
+
+The project now demonstrates:
+
+```text
+Normalized Database Design
+One-to-Many Relationships
+Many-to-Many Relationships
+Booking Aggregation Pattern
+Price Snapshot Strategy
+Modular Django Architecture
+Session-Based Authentication
+Responsive UI Design
+Migration-Based Database Evolution
+```
+
+### Current Engineering Level
+
+```text
+Junior+ / Early Mid-Level Architecture
 ```
 
 ---
 
 # 19. Conclusion
 
-The Beauty Salon Management System demonstrates a practical implementation of Django-based web development principles, including authentication, appointment management, modular architecture, session handling, ORM usage, and responsive UI design.
+The Beauty Salon Management System has evolved from a simple appointment booking application into a structured salon management platform.
 
-The current implementation successfully supports the complete customer booking lifecycle while establishing a scalable foundation for future salon management capabilities such as staff operations, notifications, billing, analytics, and administrative control.
+The current implementation supports customer authentication, service catalog management, staff-service assignment, appointment booking, booking history, and scalable database architecture.
+
+The project is prepared for future expansion into advanced scheduling, conflict prevention, notifications, billing, analytics, REST APIs, React frontend integration, and mobile applications while maintaining a clean and maintainable Django architecture.
