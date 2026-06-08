@@ -1,3 +1,7 @@
+
+<img width="1536" height="1024" alt="Beauty Salon Management System - Final ERD" src="https://github.com/user-attachments/assets/f4d27bca-c570-48d0-b2cd-4e5134b9cbd3" />
+<img width="1536" height="1024" alt="Beauty Salon Management System - Data Flow Diagram (DFD)" src="https://github.com/user-attachments/assets/eca84ae8-9920-415a-a375-478f28a502a9" />
+
 # Beauty Salon Management System
 ## Project Documentation Report
 
