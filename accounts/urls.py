@@ -1,39 +1,84 @@
 from django.urls import path
+
 from .views import (
     login_page,
     otp_verify_view,
     send_otp,
     verify_and_login,
-    dev_last_otp,   # 👈 جديد (DEV فقط)
+    customer_dashboard,
+    services_page,
+    contact_page,
+    dev_last_otp,
 )
 
 app_name = "accounts"
 
 urlpatterns = [
 
-    # -------------------------------------------------
-    # 1) صفحة تسجيل الدخول (إدخال رقم الجوال)
-    # -------------------------------------------------
-    path("login/", login_page, name="login_page"),
+    # ==================================================
+    # Authentication
+    # ==================================================
 
-    # -------------------------------------------------
-    # 2) صفحة إدخال رمز OTP بعد إرسال الكود
-    # -------------------------------------------------
-    path("otp-verify/", otp_verify_view, name="otp_verify"),
+    # صفحة تسجيل الدخول
+    path(
+        "login/",
+        login_page,
+        name="login_page"
+    ),
 
-    # -------------------------------------------------
-    # 3) API إرسال كود التحقق (OTP)
-    # -------------------------------------------------
-    path("send-otp/", send_otp, name="send_otp"),
+    # صفحة إدخال رمز التحقق
+    path(
+        "otp-verify/",
+        otp_verify_view,
+        name="otp_verify"
+    ),
 
-    # -------------------------------------------------
-    # 4) API التحقق من الكود وتسجيل المستخدم
-    # -------------------------------------------------
-    path("verify/", verify_and_login, name="verify_otp"),
+    # API إرسال OTP
+    path(
+        "send-otp/",
+        send_otp,
+        name="send_otp"
+    ),
 
-    # -------------------------------------------------
-    # 5) DEV ONLY: جلب آخر OTP من قاعدة البيانات
-    # يعمل فقط عندما DEBUG=True
-    # -------------------------------------------------
-    path("dev-last-otp/", dev_last_otp, name="dev_last_otp"),
+    # API التحقق من OTP وتسجيل الدخول
+    path(
+        "verify/",
+        verify_and_login,
+        name="verify_otp"
+    ),
+
+    # ==================================================
+    # Customer Pages
+    # ==================================================
+
+    # لوحة العميل
+    path(
+        "dashboard/",
+        customer_dashboard,
+        name="dashboard"
+    ),
+
+    # الخدمات
+    path(
+        "services/",
+        services_page,
+        name="services"
+    ),
+
+    # تواصل معنا
+    path(
+        "contact/",
+        contact_page,
+        name="contact"
+    ),
+
+    # ==================================================
+    # Development Only
+    # ==================================================
+
+    path(
+        "dev-last-otp/",
+        dev_last_otp,
+        name="dev_last_otp"
+    ),
 ]
