@@ -1,73 +1,68 @@
 from django.db import models
+from catalog.models import Service
 
 
 class Staff(models.Model):
-    full_name = models.CharField(
-        max_length=150,
-        verbose_name="الاسم الكامل"
+    name = models.CharField(
+        max_length=100,
+        verbose_name="اسم الموظفة",
     )
 
     phone = models.CharField(
         max_length=20,
-        unique=True,
-        verbose_name="رقم الجوال"
-    )
-
-    email = models.EmailField(
         blank=True,
         null=True,
-        verbose_name="البريد الإلكتروني"
+        verbose_name="رقم الجوال",
     )
 
     is_active = models.BooleanField(
         default=True,
-        verbose_name="نشطة"
+        verbose_name="نشطة",
     )
 
-    hire_date = models.DateField(
-        blank=True,
-        null=True,
-        verbose_name="تاريخ التوظيف"
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاريخ الإنشاء",
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ["full_name"]
-        verbose_name = "موظفة"
-        verbose_name_plural = "الموظفات"
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="آخر تحديث",
+    )
 
     def __str__(self):
-        return self.full_name
-    
+        return self.name
 
-from catalog.models import Service
+    class Meta:
+        verbose_name = "موظفة"
+        verbose_name_plural = "الموظفات"
+        ordering = ["name"]
 
 
 class StaffService(models.Model):
     staff = models.ForeignKey(
         Staff,
         on_delete=models.CASCADE,
-        related_name="staff_services"
+        related_name="services",
+        verbose_name="الموظفة",
     )
 
     service = models.ForeignKey(
         Service,
         on_delete=models.CASCADE,
-        related_name="service_staff"
+        related_name="staff_members",
+        verbose_name="الخدمة",
     )
 
-    class Meta:
-        verbose_name = "خدمة موظفة"
-        verbose_name_plural = "خدمات الموظفات"
+    def __str__(self):
+        return f"{self.staff.name} - {self.service.name}"
 
+    class Meta:
+        verbose_name = "خدمة الموظفة"
+        verbose_name_plural = "خدمات الموظفات"
         constraints = [
             models.UniqueConstraint(
                 fields=["staff", "service"],
-                name="unique_staff_service"
+                name="unique_staff_service",
             )
         ]
-
-    def __str__(self):
-        return f"{self.staff} - {self.service}"
