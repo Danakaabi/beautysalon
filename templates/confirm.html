@@ -10,152 +10,264 @@
 
 <style>
 *{
-    margin:0;padding:0;box-sizing:border-box;
-    font-family:"Tajawal",sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Tajawal",Arial,sans-serif;
 }
 
-/* خلفية بنفس التدرجات الأصلية */
+html{
+    min-height:100%;
+}
+
 body{
+    min-height:100vh;
     background:linear-gradient(180deg,#5a00e6,#8a2bff,#c77aff,#f3cbff);
-    min-height:100vh;color:#fff;
-    display:flex;justify-content:center;align-items:flex-start;
-    padding:30px 14px;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:30px 14px 70px;
     position:relative;
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
-/* زر الرجوع — النسخة الأصلية */
 .back-btn{
-    position:absolute;top:20px;right:20px;
-    width:40px;height:40px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    border:none;font-size:18px;color:#fff;
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    font-size:20px;
+    color:#fff;
     background:rgba(255,255,255,.14);
     backdrop-filter:blur(8px);
     box-shadow:0 4px 12px rgba(0,0,0,.25);
-    cursor:pointer;transition:.25s;
+    cursor:pointer;
+    transition:.25s;
+    text-decoration:none;
+    z-index:10;
 }
+
 .back-btn:hover{
     background:rgba(255,255,255,.22);
     transform:translateY(-2px);
 }
 
-/* صندوق الصفحة */
-.screen{width:100%;max-width:430px;}
+.screen{
+    width:100%;
+    max-width:430px;
+    position:relative;
+    z-index:1;
+}
 
-/* شعار SVG — نفس الموجود في صفحة تسجيل الدخول */
 .logo-block{
+    margin-top:48px;
     margin-bottom:16px;
     text-align:center;
-    animation:fadeLogo 1s ease;
+    animation:fadeLogo .7s ease;
 }
+
 .logo-block svg{
-    width:70px;height:70px;fill:#fff;
+    width:66px;
+    height:66px;
+    fill:#fff;
     filter:drop-shadow(0 4px 12px rgba(0,0,0,.25));
 }
+
 .logo-title{
-    font-size:28px;font-weight:800;margin-top:6px;
+    font-size:28px;
+    font-weight:800;
+    margin-top:6px;
 }
+
 .logo-sub{
-    font-size:12px;letter-spacing:3px;opacity:.85;margin-top:-4px;
+    font-size:12px;
+    letter-spacing:3px;
+    opacity:.85;
+    margin-top:-4px;
 }
 
-/* العنوان */
-.header{text-align:center;margin-bottom:22px;}
-.header h2{font-size:26px;font-weight:800;margin-bottom:6px;}
-.header p{opacity:.88;font-size:15px;}
+.header{
+    text-align:center;
+    margin-bottom:22px;
+}
 
-/* كرت البيانات */
+.header h2{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.header p{
+    opacity:.88;
+    font-size:15px;
+}
+
 .card{
     background:#fff;
     color:#1b1360;
-    padding:22px;border-radius:22px;
-    box-shadow:0 18px 42px rgba(0,0,0,.27);
-    animation:fadeUp .6s ease;
+    padding:22px;
+    border-radius:22px;
+    box-shadow:0 18px 42px rgba(0,0,0,.25);
+    animation:fadeUp .45s ease;
 }
+
+.row{
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    font-size:15px;
+    line-height:1.6;
+}
+
+.row span:first-child{
+    color:#6f6a86;
+    font-weight:700;
+    flex-shrink:0;
+}
+
+.row span:last-child{
+    text-align:left;
+    font-weight:700;
+    word-break:break-word;
+}
+
+.divider{
+    height:1px;
+    background:rgba(0,0,0,.14);
+    margin:14px 0;
+}
+
+.confirm-btn{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    background:#00d5c3;
+    color:#003c3a;
+    border-radius:999px;
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.25s;
+    box-shadow:0 12px 32px rgba(0,0,0,.26);
+}
+
+.confirm-btn:hover{
+    background:#00c5b4;
+    transform:translateY(-2px);
+}
+
+.messages{
+    margin-bottom:16px;
+}
+
+.message{
+    background:rgba(255,255,255,.16);
+    color:#fff;
+    padding:12px 14px;
+    border-radius:14px;
+    margin-bottom:8px;
+    text-align:center;
+    font-size:14px;
+}
+
+.waves{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    opacity:.35;
+    z-index:0;
+    pointer-events:none;
+}
+
+.waves svg{
+    width:100%;
+    display:block;
+}
+
 @keyframes fadeUp{
     from{opacity:0;transform:translateY(18px);}
     to{opacity:1;transform:translateY(0);}
 }
 
 @keyframes fadeLogo{
-    0%{opacity:0;transform:translateY(-15px) scale(.95);}
-    100%{opacity:1;transform:translateY(0) scale(1);}
+    from{opacity:0;transform:translateY(-14px) scale(.96);}
+    to{opacity:1;transform:translateY(0) scale(1);}
 }
 
-.row{
-    margin-bottom:12px;
-    display:flex;justify-content:space-between;
-    font-size:15px;
-}
-.row span:first-child{opacity:.7;}
+@media(max-width:480px){
+    body{
+        padding:24px 14px 60px;
+    }
 
-.divider{
-    height:1px;background:rgba(0,0,0,.14);
-    margin:14px 0;
-}
+    .logo-block{
+        margin-top:52px;
+    }
 
-/* زر التأكيد */
-.confirm-btn{
-    width:100%;margin-top:20px;
-    padding:15px;border:none;
-    background:#00d5c3;color:#003c3a;
-    border-radius:999px;font-size:17px;font-weight:800;
-    cursor:pointer;transition:.25s;
-    box-shadow:0 12px 32px rgba(0,0,0,.32);
-}
-.confirm-btn:hover{
-    background:#00c5b4;
-    transform:translateY(-2px);
-}
+    .logo-block svg{
+        width:58px;
+        height:58px;
+    }
 
-/* موجات أسفل الصفحة */
-.waves{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    opacity:.40;
-    z-index:-1;
-}
-.waves svg{
-    width:100%;
+    .logo-title{
+        font-size:25px;
+    }
+
+    .card{
+        padding:20px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- زر الرجوع -->
-<button class="back-btn" onclick="history.back()">←</button>
+<a href="{% url 'bookings:select_date_time' %}" class="back-btn">←</a>
 
 <div class="screen">
 
-    <!-- الشعار -->
     <div class="logo-block">
-        <svg viewBox="0 0 64 64">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
             <path d="M32 4c-4 6-6 10-6 14s2 8 6 8 6-4 6-8-2-8-6-14zm0 20c-6-4-10-6-14-6s-8 2-8 6 4 6 8 6 8-2 14-6zm0 0c6-4 10-6 14-6s8 2 8 6-4 6-8 6-8-2-14-6zm0 4c-4 6-6 10-6 14s2 8 6 8 6-4 6-8-2-8-6-14z"/>
         </svg>
         <div class="logo-title">Beauty Salon</div>
         <div class="logo-sub">BEAUTY</div>
     </div>
 
-    <!-- العنوان -->
     <div class="header">
         <h2>تأكيد الحجز</h2>
         <p>يرجى مراجعة تفاصيل موعدك قبل الإرسال</p>
     </div>
 
-    <!-- الكرت -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="card">
 
         <div class="row">
             <span>الخدمة:</span>
-            <span>{{ service.name }}</span>
+            <span>{{ service|default:"بدون تفصيل" }}</span>
         </div>
 
         <div class="row">
             <span>الموظفة:</span>
-            <span>{{ staff.name|default:"بدون تفضيل" }}</span>
+            <span>{{ staff_name|default:"أي موظفة متاحة" }}</span>
         </div>
 
         <div class="row">
@@ -168,6 +280,13 @@ body{
             <span>{{ time }}</span>
         </div>
 
+        {% if service_price %}
+            <div class="row">
+                <span>الإجمالي:</span>
+                <span>{{ service_price }} ريال</span>
+            </div>
+        {% endif %}
+
         <div class="divider"></div>
 
         <div class="row">
@@ -177,18 +296,18 @@ body{
 
         <form method="POST" action="{% url 'bookings:complete_booking' %}">
             {% csrf_token %}
-            <button class="confirm-btn">تأكيد الحجز</button>
+            <button type="submit" class="confirm-btn">تأكيد الحجز</button>
         </form>
 
     </div>
 
 </div>
 
-<!-- موجات -->
 <div class="waves">
-    <svg viewBox="0 0 1440 320">
+    <svg viewBox="0 0 1440 320" aria-hidden="true">
         <path fill="#ffffff" fill-opacity="0.33"
-        d="M0,128L80,144C160,160,320,192,480,176C640,160,800,96,960,74.7C1120,53,1280,75,1360,85.3L1440,96V320H0Z"></path>
+              d="M0,128L80,144C160,160,320,192,480,176C640,160,800,96,960,74.7C1120,53,1280,75,1360,85.3L1440,96V320H0Z">
+        </path>
     </svg>
 </div>
 
