@@ -871,11 +871,7 @@ Responsive UI Design
 Migration-Based Database Evolution
 ```
 
-### Current Engineering Level
 
-```text
-Junior+ / Early Mid-Level Architecture
-```
 
 ---
 
