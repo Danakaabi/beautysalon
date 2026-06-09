@@ -19,14 +19,17 @@ from .services import generate_otp, verify_otp
 
 PHONE_PATTERN = re.compile(r"^05\d{8}$")
 
+# الحالات التي تعتبر حجزًا قادمًا فعّالًا
+ACTIVE_BOOKING_STATUSES = ["pending", "confirmed"]
+
 
 def is_valid_saudi_phone(phone: str) -> bool:
-    """Validate Saudi mobile format: 05xxxxxxxx."""
+    """التحقق من رقم جوال سعودي بصيغة 05xxxxxxxx."""
     return bool(phone and PHONE_PATTERN.match(phone.strip()))
 
 
 # ==========================================================
-# 📌 صفحة تسجيل الدخول
+# صفحة تسجيل الدخول
 # ==========================================================
 def login_page(request):
     """عرض صفحة إدخال رقم الجوال."""
@@ -34,7 +37,7 @@ def login_page(request):
 
 
 # ==========================================================
-# 📌 صفحة إدخال رمز OTP
+# صفحة إدخال رمز OTP
 # ==========================================================
 def otp_verify_view(request):
     """عرض صفحة إدخال رمز التحقق."""
@@ -43,7 +46,7 @@ def otp_verify_view(request):
 
 
 # ==========================================================
-# 📌 إرسال كود OTP
+# إرسال كود OTP
 # ==========================================================
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -71,7 +74,7 @@ def send_otp(request):
 
 
 # ==========================================================
-# 📌 التحقق من الكود + تسجيل الدخول
+# التحقق من الكود + تسجيل الدخول
 # ==========================================================
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -110,23 +113,59 @@ def verify_and_login(request):
 
 
 # ==========================================================
-# 📌 صفحة الداشبورد
+# لوحة العميل
 # ==========================================================
 def customer_dashboard(request):
-    """لوحة العميل — تعرض الحجز القادم والحجوزات السابقة."""
+    """
+    لوحة العميل:
+    - تعرض أقرب حجز قادم فقط إذا كان pending أو confirmed.
+    - تعرض الحجوزات السابقة أو الملغية أو المكتملة في قسم الحجوزات السابقة.
+    """
     if not request.user.is_authenticated:
         return redirect("accounts:login_page")
 
+    today = date.today()
+
+    # QuerySet أساسي مع تحسين الأداء
     bookings = (
         Booking.objects
         .filter(user=request.user)
-        .select_related("time")
-        .order_by("date", "time__time")
+        .select_related("time", "staff_member")
+        .prefetch_related("items__service")
     )
 
-    today = date.today()
-    upcoming_booking = bookings.filter(date__gte=today).first()
-    previous_bookings = bookings.filter(date__lt=today)
+    # الحجز القادم: لا نعرض الملغي أو المكتمل هنا
+    upcoming_booking = (
+        bookings
+        .filter(
+            date__gte=today,
+            status__in=ACTIVE_BOOKING_STATUSES,
+        )
+        .order_by("date", "time__time")
+        .first()
+    )
+
+    # الحجوزات السابقة:
+    # 1) حجوزات تاريخها قديم
+    # 2) أو حجوزات ملغية / مكتملة / لم يحضر
+    previous_bookings = (
+        bookings
+        .exclude(id=upcoming_booking.id if upcoming_booking else None)
+        .filter(
+            status__in=["canceled", "completed", "no_show"]
+        )
+        .order_by("-date", "-created_at")
+    )
+
+    old_bookings = (
+        bookings
+        .filter(date__lt=today)
+        .exclude(status__in=["canceled", "completed", "no_show"])
+        .order_by("-date", "-created_at")
+    )
+
+    # ندمجهم في قائمة واحدة حتى تظهر كل الحجوزات السابقة والمنتهية
+    previous_bookings = list(previous_bookings) + list(old_bookings)
 
     return render(
         request,
@@ -140,21 +179,21 @@ def customer_dashboard(request):
 
 
 # ==========================================================
-# 📌 صفحة قائمة الخدمات
+# صفحة قائمة الخدمات
 # ==========================================================
 def services_page(request):
+    """عرض صفحة الخدمات."""
     return render(request, "services.html")
 
 
 # ==========================================================
-# 📌 صفحة تواصل معنا
+# صفحة تواصل معنا
 # ==========================================================
 @require_http_methods(["GET", "POST"])
 def contact_page(request):
     """
     صفحة تواصل معنا.
-    حالياً لا يوجد ContactMessage model، لذلك نعالج الطلب مؤقتاً
-    ونرجع المستخدم لنفس الصفحة برسالة نجاح.
+    حالياً لا يوجد ContactMessage model.
     """
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -169,7 +208,7 @@ def contact_page(request):
             messages.error(request, "رقم الجوال غير صحيح.")
             return redirect("accounts:contact")
 
-        # مؤقتاً للتطوير فقط إلى حين إنشاء ContactMessage model
+        # مؤقتاً للتطوير فقط
         if settings.DEBUG:
             print("Contact Message:")
             print("Name:", name)
@@ -183,7 +222,7 @@ def contact_page(request):
 
 
 # ==========================================================
-# 📌 DEV ONLY: عرض آخر OTP للتجربة فقط
+# DEV ONLY: عرض آخر OTP للتجربة فقط
 # ==========================================================
 def dev_last_otp(request):
     """

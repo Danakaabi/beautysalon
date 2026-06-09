@@ -159,7 +159,6 @@ def confirm_booking_view(request):
         },
     )
 
-
 @transaction.atomic
 def complete_booking_view(request):
     if request.method != "POST":
@@ -173,6 +172,7 @@ def complete_booking_view(request):
     date_val = request.session.get("selected_date")
     time_str = request.session.get("selected_time")
     selected_staff_id = request.session.get("selected_staff_id")
+    edit_booking_id = request.session.get("edit_booking_id")
 
     if not service_data or not date_val or not time_str:
         messages.error(request, "حدث خطأ.. يرجى إعادة العملية.")
@@ -188,22 +188,37 @@ def complete_booking_view(request):
 
     staff_member = None
 
+    # إذا العميلة اختارت موظفة محددة
     if selected_staff_id:
-        staff_member = Staff.objects.filter(id=selected_staff_id, is_active=True).first()
+        staff_member = Staff.objects.filter(
+            id=selected_staff_id,
+            is_active=True,
+        ).first()
 
         if not staff_member:
             messages.error(request, "الموظفة المحددة غير متاحة.")
             return redirect("bookings:select_date_time")
 
-        if service_obj and not StaffService.objects.filter(staff=staff_member, service=service_obj).exists():
+        if service_obj and not StaffService.objects.filter(
+            staff=staff_member,
+            service=service_obj,
+        ).exists():
             messages.error(request, "الموظفة المحددة لا تقدم هذه الخدمة.")
             return redirect("bookings:select_date_time")
+
+    # إذا العميلة اختارت أي موظفة متاحة
     else:
         busy_staff_ids = Booking.objects.filter(
             date=date_val,
             time=slot,
             status__in=ACTIVE_BOOKING_STATUSES,
-        ).values_list("staff_member_id", flat=True)
+        )
+
+        # مهم: عند تعديل حجز، لا نعتبر الحجز الحالي تعارضًا مع نفسه
+        if edit_booking_id:
+            busy_staff_ids = busy_staff_ids.exclude(id=edit_booking_id)
+
+        busy_staff_ids = busy_staff_ids.values_list("staff_member_id", flat=True)
 
         if service_obj:
             staff_service = (
@@ -231,38 +246,98 @@ def complete_booking_view(request):
         messages.error(request, "لا توجد موظفة متاحة في هذا الوقت.")
         return redirect("bookings:select_date_time")
 
-    if Booking.objects.filter(
+    # منع التكرار مع استثناء الحجز الحالي عند التعديل
+    conflict_qs = Booking.objects.filter(
         date=date_val,
         time=slot,
         staff_member=staff_member,
         status__in=ACTIVE_BOOKING_STATUSES,
-    ).exists():
+    )
+
+    if edit_booking_id:
+        conflict_qs = conflict_qs.exclude(id=edit_booking_id)
+
+    if conflict_qs.exists():
         messages.error(request, "هذا الموعد محجوز مسبقاً لهذه الموظفة.")
         return redirect("bookings:select_date_time")
 
     try:
-        booking = Booking.objects.create(
-            user=request.user,
-            service=service_data.get("name", ""),
-            date=date_val,
-            time=slot,
-            staff_member=staff_member,
-            status="confirmed",
-            total_amount=0,
-        )
+        # =====================================================
+        # تعديل حجز موجود
+        # =====================================================
+        if edit_booking_id:
+            booking = get_object_or_404(
+                Booking,
+                id=edit_booking_id,
+                user=request.user,
+            )
+
+            if booking.status == "canceled":
+                messages.error(request, "لا يمكن تعديل حجز ملغي.")
+                return redirect("bookings:my_bookings")
+
+            booking.service = service_data.get("name", "")
+            booking.date = date_val
+            booking.time = slot
+            booking.staff_member = staff_member
+            booking.status = "confirmed"
+            booking.total_amount = 0
+            booking.save(
+                update_fields=[
+                    "service",
+                    "date",
+                    "time",
+                    "staff_member",
+                    "status",
+                    "total_amount",
+                    "updated_at",
+                ]
+            )
+
+            # تحديث BookingItem بدل إنشاء حجز جديد
+            booking.items.all().delete()
+
+            if service_obj:
+                BookingItem.objects.create(
+                    booking=booking,
+                    service=service_obj,
+                    price_at_booking=service_obj.price,
+                    duration_at_booking=service_obj.duration_minutes,
+                )
+                booking.recalculate_total()
+
+            messages.success(request, "تم تعديل الموعد بنجاح.")
+
+        # =====================================================
+        # إنشاء حجز جديد
+        # =====================================================
+        else:
+            booking = Booking.objects.create(
+                user=request.user,
+                service=service_data.get("name", ""),
+                date=date_val,
+                time=slot,
+                staff_member=staff_member,
+                status="confirmed",
+                total_amount=0,
+            )
+
+            if service_obj:
+                BookingItem.objects.create(
+                    booking=booking,
+                    service=service_obj,
+                    price_at_booking=service_obj.price,
+                    duration_at_booking=service_obj.duration_minutes,
+                )
+                booking.recalculate_total()
+
+            messages.success(request, "تم إنشاء الحجز بنجاح.")
+
     except IntegrityError:
         messages.error(request, "هذا الموعد محجوز مسبقاً.")
         return redirect("bookings:select_date_time")
 
-    if service_obj:
-        BookingItem.objects.create(
-            booking=booking,
-            service=service_obj,
-            price_at_booking=service_obj.price,
-            duration_at_booking=service_obj.duration_minutes,
-        )
-        booking.recalculate_total()
-
+    # تنظيف بيانات الجلسة بعد نجاح العملية
     for key in (
         "service",
         "selected_date",
@@ -274,8 +349,6 @@ def complete_booking_view(request):
         request.session.pop(key, None)
 
     return redirect("bookings:booking_success")
-
-
 def booking_success_view(request):
     latest_booking = None
 

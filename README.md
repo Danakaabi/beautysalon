@@ -297,20 +297,138 @@ Status:
 confirmed
 ```
 
-## Step 6 — Booking Success Page
+## Step 6 — Customer Journey 
+# 6. Customer Journey
+
+The system provides a complete end-to-end customer booking experience.
+
+## Step 1 — Authentication
+
+```text
+Enter Phone Number
+        ↓
+Generate OTP
+        ↓
+Verify OTP
+        ↓
+Customer Login
+```
+
+## Step 2 — Service Selection
+
+```text
+Customer
+        ↓
+Select Service
+```
+
+## Step 3 — Staff Selection
+
+```text
+Customer
+        ↓
+Select Staff
+
+OR
+
+Any Available Staff
+```
+
+## Step 4 — Date Selection
+
+```text
+Customer
+        ↓
+Select Date
+```
+
+## Step 5 — Time Selection
+
+```text
+Customer
+        ↓
+Select Available Time Slot
+```
+
+## Step 6 — Booking Confirmation
+
+Customer reviews:
+
+```text
+Service
+Staff Member
+Date
+Time
+Phone Number
+Total Amount
+```
+
+## Step 7 — Booking Creation
+
+```text
+Booking
+        ↓
+BookingItem
+        ↓
+Price Calculation
+```
+
+Status:
+
+```text
+confirmed
+```
+
+## Step 8 — Success Page
 
 Displays:
 
 ```text
-Booking Information
+Booking Reference
 Service Details
-Appointment Date
-Appointment Time
+Staff Details
+Date
+Time
+Total Amount
 ```
 
----
+## Step 9 — Customer Dashboard
 
-# 7. Customer Portal
+Provides:
+
+```text
+Upcoming Appointments
+Booking History
+Edit Booking
+Cancel Booking
+```
+---
+# 10.Booking Engine 
+
+
+The booking engine is responsible for validating appointments and ensuring scheduling consistency.
+
+## Responsibilities
+
+```text
+Booking Creation
+Booking Validation
+Booking Editing
+Booking Cancellation
+Price Calculation
+Staff Assignment
+```
+
+## Features
+
+```text
+Conflict Prevention
+Duplicate Booking Detection
+Staff Availability Validation
+Booking History Tracking
+Appointment Rescheduling
+```
+# 11. Customer Portal
 
 ## Features
 
@@ -338,8 +456,47 @@ Cancel Booking
 Displays previous appointments.
 
 ---
+# 12. Conflict Prevention Engine
 
-# 8. Staff Portal
+One of the most important implemented features is preventing scheduling conflicts.
+
+The system validates:
+
+```text
+Date
+Time Slot
+Staff Member
+Booking Status
+```
+
+Before creating a booking.
+
+## Example
+
+```text
+Amal
+18-06-2026
+11:00
+```
+
+If already booked:
+
+```text
+Booking Rejected
+```
+
+and the customer receives a validation message.
+
+## Booked Slot Locking
+
+Booked slots appear as:
+
+```text
+11:00 (Booked)
+```
+
+and cannot be selected again.
+# 13. Staff Portal
 
 ### Templates
 
@@ -364,7 +521,7 @@ Performance Tracking
 
 ---
 
-# 9. Notifications Center
+# 14. Notifications Center
 
 ### Purpose
 
@@ -382,7 +539,7 @@ Administrative Alerts
 
 ---
 
-# 10. Billing Module
+# 15. Billing Module
 
 ### Purpose
 
@@ -400,7 +557,7 @@ Refund Management
 
 ---
 
-# 11. Control Panel
+# 16. Control Panel
 
 ### Purpose
 
@@ -420,7 +577,7 @@ Analytics
 
 ---
 
-# 12. User Interface Design
+# 16. User Interface Design
 
 ### Design Characteristics
 
@@ -443,7 +600,7 @@ Analytics
 
 ---
 
-# 13. Database Design
+# 17. Database Design
 
 ## Current Core Entities
 
@@ -561,12 +718,11 @@ time
 ```
 
 ---
+# 18. Implemented Features
 
-# 15. Implemented Features
+## Completed Features
 
-### Completed
-
-✅ OTP Authentication (Development Mode)
+✅ OTP Authentication
 
 ✅ Service Categories
 
@@ -577,6 +733,10 @@ time
 ✅ Staff-Service Assignment
 
 ✅ Service Selection
+
+✅ Staff Selection
+
+✅ Automatic Staff Assignment
 
 ✅ Date Selection
 
@@ -592,21 +752,30 @@ time
 
 ✅ Appointment History
 
-✅ Booking Cancellation
+✅ Appointment Cancellation
 
-✅ Appointment Editing
+✅ Appointment Rescheduling
+
+✅ Booking Update Without Record Duplication
+
+✅ Duplicate Booking Prevention
+
+✅ Conflict Detection
+
+✅ Booked Slot Locking
 
 ✅ BookingItem Architecture
+
+✅ Dynamic Price Calculation
 
 ✅ Total Amount Tracking
 
 ✅ Responsive User Interface
 
 ✅ Modular Django Architecture
-
 ---
 
-# 16. Future Enhancements
+# 19. Future Enhancements
 
 ## Authentication
 
@@ -647,40 +816,46 @@ time
 - Mobile Application Integration
 
 ---
-
-# 17. Engineering Evaluation
+# 20. Engineering Evaluation
 
 ### Current Project Classification
 
 ```text
 Salon Management System
+
 with
+
 Appointment Booking Platform
+
+Customer Self-Service Portal
+
+Staff Scheduling Foundation
 ```
 
 ### Project Maturity
 
 ```text
-Frontend UI/UX        █████████░ 90%
-Authentication        ███████░░░ 70%
-Booking Workflow      ████████░░ 85%
-Database Design       █████████░ 90%
-Service Catalog       ████████░░ 85%
-Staff Management      ██████░░░░ 60%
+Frontend UI/UX        ██████████ 95%
+Authentication        ████████░░ 80%
+Booking Workflow      ██████████ 100%
+Database Design       ██████████ 95%
+Service Catalog       ██████████ 95%
+Staff Management      ███████░░░ 70%
 Notifications         ██░░░░░░░░ 20%
 Billing               ██░░░░░░░░ 20%
 Administration        ███░░░░░░░ 30%
+Analytics             █░░░░░░░░░ 10%
 ```
 
 ### Overall Progress
 
 ```text
-≈ 80% MVP Completion
+≈ 85% MVP Completion
 ```
 
 ---
 
-# 18. Engineering Assessment
+# 21. Engineering Assessment
 
 The project now demonstrates:
 
@@ -704,7 +879,7 @@ Junior+ / Early Mid-Level Architecture
 
 ---
 
-# 19. Conclusion
+# 22. Conclusion
 
 The Beauty Salon Management System has evolved from a simple appointment booking application into a structured salon management platform.
 
