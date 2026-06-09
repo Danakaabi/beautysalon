@@ -18,7 +18,7 @@
         }
 
         body {
-            font-family:"Tajawal",sans-serif;
+            font-family:"Tajawal",Arial,sans-serif;
             min-height:100vh;
             background:var(--wave-bg);
             color:#fff;
@@ -28,15 +28,19 @@
             animation:fadeUp .55s ease;
         }
 
-        /* زر الرجوع */
         .back-btn {
             position:absolute;
-            top:16px;right:16px;
-            width:38px;height:38px;
+            top:16px;
+            right:16px;
+            width:38px;
+            height:38px;
             border:none;
             border-radius:50%;
-            font-size:18px;color:#fff;
-            display:flex;align-items:center;justify-content:center;
+            font-size:18px;
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
             background:rgba(255,255,255,.14);
             backdrop-filter:blur(8px);
             box-shadow:0 4px 12px rgba(0,0,0,.25);
@@ -44,12 +48,12 @@
             transition:.25s;
             text-decoration:none;
         }
+
         .back-btn:hover {
             background:rgba(255,255,255,.22);
             transform:translateY(-2px);
         }
 
-        /* الشعار */
         .logo-block {
             text-align:center;
             margin-top:50px;
@@ -57,14 +61,11 @@
         }
 
         .logo-icon svg {
-            width:68px;height:68px;fill:#fff;
+            width:68px;
+            height:68px;
+            fill:#fff;
             filter:drop-shadow(0 4px 12px rgba(0,0,0,.18));
             transition:.3s;
-        }
-
-        @media(max-width:480px){
-            .logo-icon svg {width:52px;height:52px;}
-            .title {font-size:25px;}
         }
 
         .title {
@@ -72,15 +73,20 @@
             font-weight:800;
             margin-top:6px;
         }
+
         .sub {
-            font-size:13px;opacity:.85;
-            letter-spacing:3px;margin-top:-4px;
-        }
-        .page-title {
-            margin-top:10px;font-size:17px;opacity:.92;
+            font-size:13px;
+            opacity:.85;
+            letter-spacing:3px;
+            margin-top:-4px;
         }
 
-        /* شبكة الخدمات */
+        .page-title {
+            margin-top:10px;
+            font-size:17px;
+            opacity:.92;
+        }
+
         .services-grid {
             max-width:1120px;
             margin:28px auto 0;
@@ -109,50 +115,100 @@
         }
 
         .service-icon svg {
-            width:50px;height:50px;
-            stroke:var(--purple);stroke-width:2;
+            width:50px;
+            height:50px;
+            stroke:var(--purple);
+            stroke-width:2;
             fill:none;
             margin-bottom:10px;
         }
 
         .service-title {
-            font-size:18px;font-weight:800;color:#4a00c8;
+            font-size:18px;
+            font-weight:800;
+            color:#4a00c8;
             margin-bottom:4px;
         }
 
         .price {
-            font-size:15px;color:#666;margin-bottom:12px;
+            font-size:15px;
+            color:#666;
+            margin-bottom:12px;
         }
 
         .btn-book {
-            width:100%;height:42px;border:none;
-            border-radius:14px;background:var(--mint);
-            color:#fff;font-size:15px;font-weight:700;
-            cursor:pointer;transition:.25s;
+            width:100%;
+            height:42px;
+            border:none;
+            border-radius:14px;
+            background:var(--mint);
+            color:#fff;
+            font-size:15px;
+            font-weight:700;
+            cursor:pointer;
+            transition:.25s;
         }
+
         .btn-book:hover {
             background:var(--mint-hover);
             transform:translateY(-2px);
         }
 
-        /* موجة */
-        .waves {
-            position:absolute;bottom:0;width:100%;opacity:.38;z-index:-1;
+        .empty-message {
+            max-width:520px;
+            margin:40px auto 0;
+            padding:18px;
+            background:rgba(255,255,255,.16);
+            border-radius:18px;
+            text-align:center;
+            font-size:17px;
         }
 
-        @keyframes fadeUp {0%{opacity:0;transform:translateY(22px);}100%{opacity:1;transform:translateY(0);}}
-        @keyframes fadeDown {0%{opacity:0;transform:translateY(-22px);}100%{opacity:1;transform:translateY(0);}}
-        @keyframes cardEnter {0%{opacity:0;transform:translateY(28px);}100%{opacity:1;transform:translateY(0);}}
+        .waves {
+            position:absolute;
+            bottom:0;
+            width:100%;
+            opacity:.38;
+            z-index:-1;
+        }
+
+        @keyframes fadeUp {
+            0%{opacity:0;transform:translateY(22px);}
+            100%{opacity:1;transform:translateY(0);}
+        }
+
+        @keyframes fadeDown {
+            0%{opacity:0;transform:translateY(-22px);}
+            100%{opacity:1;transform:translateY(0);}
+        }
+
+        @keyframes cardEnter {
+            0%{opacity:0;transform:translateY(28px);}
+            100%{opacity:1;transform:translateY(0);}
+        }
+
+        @media(max-width:480px){
+            .logo-icon svg {
+                width:52px;
+                height:52px;
+            }
+
+            .title {
+                font-size:25px;
+            }
+
+            .services-grid {
+                grid-template-columns:1fr;
+                gap:18px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<!-- زر الرجوع للداشبورد -->
-<a href="{% url 'accounts:customer_dashboard' %}" class="back-btn">←</a>
+<a href="{% url 'portal_client:home' %}" class="back-btn">←</a>
 
-
-<!-- الشعار -->
 <div class="logo-block">
     <div class="logo-icon">
         <svg viewBox="0 0 64 64">
@@ -164,91 +220,35 @@
     <div class="page-title">اختيار الخدمة</div>
 </div>
 
-<!-- نموذج الخدمات -->
 <form method="POST" action="{% url 'bookings:select_service' %}">
     {% csrf_token %}
 
     <input type="hidden" name="service" id="selectedServiceInput">
 
     <div class="services-grid">
+        {% for service in services %}
+            <div class="service-card" onclick="chooseService('{{ service.id }}')">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 11c0-4.5 3-7 6-8 3 1 6 3.5 6 8 0 3.5-1.5 6-4 7.5"/>
+                        <path d="M8 11c0 3 1.5 4.5 3 5.5"/>
+                        <path d="M11 14.5c.8.7 2.2.7 3 0"/>
+                    </svg>
+                </div>
 
-        <!-- مكياج -->
-        <div class="service-card" onclick="chooseService('مكياج')">
-            <div class="service-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M10 3.5c0-.8.7-1.5 2-1.5s2 .7 2 1.5v5.5h-4z"/>
-                    <rect x="9" y="9" width="6" height="8" rx="2"/>
-                    <path d="M9 19h6v2.5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"/>
-                </svg>
+                <div class="service-title">{{ service.name }}</div>
+                <div class="price">{{ service.price }} ريال</div>
+
+                <button type="button" class="btn-book">اختيار</button>
             </div>
-            <div class="service-title">مكياج</div>
-            <div class="price">180 ريال</div>
-            <button type="button" class="btn-book">اختيار</button>
-        </div>
-
-        <!-- تسريحة شعر -->
-        <div class="service-card" onclick="chooseService('تسريحة شعر')">
-            <div class="service-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M6 11c0-4.5 3-7 6-8 3 1 6 3.5 6 8 0 3.5-1.5 6-4 7.5"/>
-                    <path d="M8 11c0 3 1.5 4.5 3 5.5"/>
-                    <path d="M11 14.5c.8.7 2.2.7 3 0"/>
-                </svg>
+        {% empty %}
+            <div class="empty-message">
+                لا توجد خدمات متاحة حالياً.
             </div>
-            <div class="service-title">تسريحة شعر</div>
-            <div class="price">120 ريال</div>
-            <button type="button" class="btn-book">اختيار</button>
-        </div>
-
-        <!-- قص شعر -->
-        <div class="service-card" onclick="chooseService('قص شعر')">
-            <div class="service-icon">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="6.5" cy="7" r="2.5"/>
-                    <circle cx="6.5" cy="17" r="2.5"/>
-                    <path d="M20 4L9 15"/>
-                    <path d="M13 13.5L20 21"/>
-                </svg>
-            </div>
-            <div class="service-title">قص شعر</div>
-            <div class="price">90 ريال</div>
-            <button type="button" class="btn-book">اختيار</button>
-        </div>
-
-        <!-- بدكير -->
-        <div class="service-card" onclick="chooseService('بدكير ومناكير')">
-            <div class="service-icon">
-                <svg viewBox="0 0 24 24">
-                    <rect x="9" y="3" width="6" height="10" rx="3"/>
-                    <path d="M12 13v8"/>
-                    <path d="M8 21.5h8"/>
-                </svg>
-            </div>
-            <div class="service-title">بدكير ومناكير</div>
-            <div class="price">75 ريال</div>
-            <button type="button" class="btn-book">اختيار</button>
-        </div>
-
-        <!-- تنظيف بشرة -->
-        <div class="service-card" onclick="chooseService('تنظيف بشرة')">
-            <div class="service-icon">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="9" r="3.5"/>
-                    <path d="M8.5 9.2h.01"/>
-                    <path d="M15.5 9.2h.01"/>
-                    <path d="M10.2 11.4c.6.5 1.9.5 2.6 0"/>
-                    <path d="M5 20c2-4 12-4 14 0"/>
-                </svg>
-            </div>
-            <div class="service-title">تنظيف بشرة</div>
-            <div class="price">140 ريال</div>
-            <button type="button" class="btn-book">اختيار</button>
-        </div>
-
+        {% endfor %}
     </div>
 </form>
 
-<!-- موجة -->
 <div class="waves">
     <svg viewBox="0 0 1440 320">
         <path fill="#ffffff" fill-opacity="0.33"
@@ -257,9 +257,16 @@
 </div>
 
 <script>
-    function chooseService(service){
-        document.getElementById("selectedServiceInput").value = service;
-        document.querySelector("form").submit();
+    function chooseService(serviceId) {
+        const input = document.getElementById("selectedServiceInput");
+        const form = input.closest("form");
+
+        if (!serviceId || !form) {
+            return;
+        }
+
+        input.value = serviceId;
+        form.submit();
     }
 </script>
 
