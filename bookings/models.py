@@ -101,7 +101,6 @@ class Booking(models.Model):
         auto_now=True,
         verbose_name="آخر تحديث",
     )
-
     class Meta:
         ordering = ["-created_at"]
         verbose_name = "حجز"
@@ -111,7 +110,13 @@ class Booking(models.Model):
             models.Index(fields=["status"]),
             models.Index(fields=["staff_member", "date"]),
         ]
-
+        constraints = [
+            models.UniqueConstraint(
+                fields=["date", "time", "staff_member"],
+                condition=models.Q(status__in=["pending", "confirmed"]),
+                name="unique_active_booking_per_staff_time",
+            )
+        ]
     def __str__(self):
         user_phone = getattr(self.user, "phone", "بدون رقم")
         time_display = self.time.time.strftime("%H:%M") if self.time else "—"
