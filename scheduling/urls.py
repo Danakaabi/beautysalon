@@ -9,21 +9,31 @@ urlpatterns = [
         views.staff_dashboard,
         name="staff_dashboard",
     ),
+
     path(
         "staff/bookings/",
         views.staff_bookings,
         name="staff_bookings",
     ),
+
+    path(
+        "staff/bookings/<int:booking_id>/",
+        views.booking_detail,
+        name="booking_detail",
+    ),
+
     path(
         "staff/schedule/",
         views.staff_schedule,
         name="staff_schedule",
     ),
+
     path(
         "staff/profile/",
         views.staff_profile,
         name="staff_profile",
     ),
+
     path(
         "staff/notifications/",
         views.staff_notifications,
