@@ -1,0 +1,98 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+{% block title %}تفاصيل الحجز | Beauty Salon{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'staff/css/staff-booking-detail.css' %}?v=6">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Portal</p>
+        <h1>تفاصيل الحجز</h1>
+        <p class="muted">معلومات الحجز كاملة.</p>
+    </div>
+</section>
+
+<section class="detail-panel">
+
+    <div class="detail-grid">
+
+        <div class="detail-card">
+            <span>العميل</span>
+            <strong>
+                {% if booking.user %}
+                    {{ booking.user.phone }}
+                {% else %}
+                    عميل غير معروف
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-card">
+            <span>الموظفة</span>
+            <strong>
+                {% if booking.staff_member %}
+                    {{ booking.staff_member.name }}
+                {% else %}
+                    غير محددة
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-card">
+            <span>التاريخ</span>
+            <strong>{{ booking.date }}</strong>
+        </div>
+
+        <div class="detail-card">
+            <span>الوقت</span>
+            <strong>
+                {% if booking.time %}
+                    {{ booking.time }}
+                {% else %}
+                    —
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="detail-card">
+            <span>الحالة</span>
+            <strong>
+                <span class="status status-{{ booking.status }}">
+                    {{ booking.get_status_display }}
+                </span>
+            </strong>
+        </div>
+
+    </div>
+
+    <div class="services-box">
+        <h3>الخدمات</h3>
+
+        <div class="services-list">
+            {% for item in booking.items.all %}
+                <div class="service-item">
+                    {{ item.service.name }}
+                </div>
+            {% empty %}
+                <div class="service-item">
+                    {{ booking.service|default:"خدمة غير محددة" }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if booking.notes %}
+        <div class="services-box notes-box">
+            <h3>ملاحظات العميل</h3>
+            <p>{{ booking.notes }}</p>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}
