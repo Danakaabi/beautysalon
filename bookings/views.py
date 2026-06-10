@@ -1,13 +1,15 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from catalog.models import Service
 from scheduling.models import Staff, StaffService
 from .models import Booking, BookingItem, TimeSlot
 
 
-ACTIVE_BOOKING_STATUSES = ["pending", "confirmed"]
+ACTIVE_BOOKING_STATUSES = ["pending", "confirmed", "in_progress"]
 
 
 def _get_selected_service(service_data):
@@ -24,6 +26,31 @@ def _get_selected_service(service_data):
         is_active=True,
     ).first()
 
+def _get_logged_staff(request):
+    """
+    يرجع ملف الموظفة المرتبط بالمستخدم الحالي.
+
+    يدعم حالتين:
+    1. إذا كان Staff مربوطًا بـ user مستقبلاً عبر related_name="staff_profile".
+    2. إذا لم يوجد ربط user، يحاول المطابقة برقم الجوال.
+    """
+    if not request.user.is_authenticated:
+        return None
+
+    staff_profile = getattr(request.user, "staff_profile", None)
+
+    if staff_profile:
+        return staff_profile
+
+    user_phone = getattr(request.user, "phone", None)
+
+    if user_phone:
+        return Staff.objects.filter(
+            phone=user_phone,
+            is_active=True,
+        ).first()
+
+    return None
 
 def select_service_view(request):
     services = Service.objects.filter(is_active=True).select_related("category")
@@ -57,6 +84,7 @@ def select_service_view(request):
         return redirect("bookings:select_date_time")
 
     return render(request, "services.html", {"services": services})
+
 
 def select_date_time_view(request):
     service_data = request.session.get("service")
@@ -159,6 +187,7 @@ def confirm_booking_view(request):
         },
     )
 
+
 @transaction.atomic
 def complete_booking_view(request):
     if request.method != "POST":
@@ -188,7 +217,6 @@ def complete_booking_view(request):
 
     staff_member = None
 
-    # إذا العميلة اختارت موظفة محددة
     if selected_staff_id:
         staff_member = Staff.objects.filter(
             id=selected_staff_id,
@@ -206,7 +234,6 @@ def complete_booking_view(request):
             messages.error(request, "الموظفة المحددة لا تقدم هذه الخدمة.")
             return redirect("bookings:select_date_time")
 
-    # إذا العميلة اختارت أي موظفة متاحة
     else:
         busy_staff_ids = Booking.objects.filter(
             date=date_val,
@@ -214,7 +241,6 @@ def complete_booking_view(request):
             status__in=ACTIVE_BOOKING_STATUSES,
         )
 
-        # مهم: عند تعديل حجز، لا نعتبر الحجز الحالي تعارضًا مع نفسه
         if edit_booking_id:
             busy_staff_ids = busy_staff_ids.exclude(id=edit_booking_id)
 
@@ -246,7 +272,6 @@ def complete_booking_view(request):
         messages.error(request, "لا توجد موظفة متاحة في هذا الوقت.")
         return redirect("bookings:select_date_time")
 
-    # منع التكرار مع استثناء الحجز الحالي عند التعديل
     conflict_qs = Booking.objects.filter(
         date=date_val,
         time=slot,
@@ -262,9 +287,6 @@ def complete_booking_view(request):
         return redirect("bookings:select_date_time")
 
     try:
-        # =====================================================
-        # تعديل حجز موجود
-        # =====================================================
         if edit_booking_id:
             booking = get_object_or_404(
                 Booking,
@@ -294,7 +316,6 @@ def complete_booking_view(request):
                 ]
             )
 
-            # تحديث BookingItem بدل إنشاء حجز جديد
             booking.items.all().delete()
 
             if service_obj:
@@ -308,9 +329,6 @@ def complete_booking_view(request):
 
             messages.success(request, "تم تعديل الموعد بنجاح.")
 
-        # =====================================================
-        # إنشاء حجز جديد
-        # =====================================================
         else:
             booking = Booking.objects.create(
                 user=request.user,
@@ -337,7 +355,6 @@ def complete_booking_view(request):
         messages.error(request, "هذا الموعد محجوز مسبقاً.")
         return redirect("bookings:select_date_time")
 
-    # تنظيف بيانات الجلسة بعد نجاح العملية
     for key in (
         "service",
         "selected_date",
@@ -349,6 +366,8 @@ def complete_booking_view(request):
         request.session.pop(key, None)
 
     return redirect("bookings:booking_success")
+
+
 def booking_success_view(request):
     latest_booking = None
 
@@ -429,3 +448,94 @@ def edit_booking(request, booking_id):
     request.session["edit_booking_id"] = booking.id
 
     return redirect("bookings:select_date_time")
+
+@login_required
+@require_POST
+@transaction.atomic
+def start_service(request, booking_id):
+    staff = _get_logged_staff(request)
+
+    if not staff and not request.user.is_staff:
+        messages.error(request, "لا يوجد ملف موظفة مرتبط بهذا الحساب.")
+        return redirect("scheduling:staff_bookings")
+
+    booking_qs = Booking.objects.select_for_update().select_related(
+        "staff_member",
+        "time",
+        "user",
+    )
+
+    if staff:
+        booking_qs = booking_qs.filter(staff_member=staff)
+
+    booking = get_object_or_404(
+        booking_qs,
+        id=booking_id,
+    )
+
+    if booking.status != "confirmed":
+        messages.warning(request, "لا يمكن بدء الخدمة لهذا الحجز.")
+        return redirect("scheduling:staff_bookings")
+
+    booking.status = "in_progress"
+    booking.save(update_fields=["status", "updated_at"])
+
+    messages.success(request, "تم بدء الخدمة بنجاح.")
+    return redirect("scheduling:staff_bookings")
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def complete_service(request, booking_id):
+    staff = _get_logged_staff(request)
+
+    if not staff and not request.user.is_staff:
+        messages.error(request, "لا يوجد ملف موظفة مرتبط بهذا الحساب.")
+        return redirect("scheduling:staff_bookings")
+
+    booking_qs = Booking.objects.select_for_update().select_related(
+        "staff_member",
+        "time",
+        "user",
+    )
+
+    if staff:
+        booking_qs = booking_qs.filter(staff_member=staff)
+
+    booking = get_object_or_404(
+        booking_qs,
+        id=booking_id,
+    )
+
+    if booking.status != "in_progress":
+        messages.warning(request, "لا يمكن إنهاء الخدمة قبل بدءها.")
+        return redirect("scheduling:staff_bookings")
+
+    booking.status = "completed"
+    booking.save(update_fields=["status", "updated_at"])
+
+    messages.success(request, "تم إنهاء الخدمة بنجاح.")
+    return redirect("scheduling:staff_bookings")
+@login_required
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(
+        Booking.objects
+        .select_related(
+            "user",
+            "staff_member",
+            "time",
+        )
+        .prefetch_related(
+            "items__service",
+        ),
+        pk=booking_id,
+    )
+
+    return render(
+        request,
+        "staff/booking-detail.html",
+        {
+            "booking": booking,
+        },
+    )
