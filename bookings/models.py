@@ -20,12 +20,13 @@ class TimeSlot(models.Model):
 
 class Booking(models.Model):
     STATUS_CHOICES = [
-        ("pending", "قيد الانتظار"),
-        ("confirmed", "مؤكد"),
-        ("completed", "مكتمل"),
-        ("canceled", "ملغي"),
-        ("no_show", "لم يحضر"),
-    ]
+      ("pending", "قيد الانتظار"),
+      ("confirmed", "مؤكد"),
+      ("in_progress", "قيد التنفيذ"),
+      ("completed", "مكتمل"),
+      ("canceled", "ملغي"),
+      ("no_show", "لم يحضر"),
+]
 
     user = models.ForeignKey(
         CustomUser,
@@ -34,7 +35,7 @@ class Booking(models.Model):
         verbose_name="العميل",
     )
 
-    # Legacy field من V1 — نُبقيه مؤقتاً حتى لا نكسر الحجز القديم
+    # Legacy field من Vمل1 — نُبقيه مؤقتاً حتى لا نكسر الحجز القديم
     service = models.CharField(
         max_length=200,
         blank=True,
