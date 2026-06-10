@@ -1,0 +1,131 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+{% block title %}الحجوزات | Beauty Salon{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'staff/css/staff-bookings.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Portal</p>
+        <h1>الحجوزات</h1>
+        <p class="muted">قائمة بجميع الحجوزات المرتبطة بحساب الموظفة.</p>
+    </div>
+</section>
+
+<section class="bookings-panel">
+
+    {% if bookings %}
+        <div class="bookings-list">
+
+            {% for booking in bookings %}
+                <article class="booking-card">
+
+                    <div class="booking-main">
+                        <h3>
+                            {% if booking.user %}
+                                العميل: {{ booking.user.phone }}
+                            {% else %}
+                                عميل غير معروف
+                            {% endif %}
+                        </h3>
+
+                        <p>
+                            {% for item in booking.items.all %}
+                                {{ item.service.name }}{% if not forloop.last %}، {% endif %}
+                            {% empty %}
+                                {{ booking.service|default:"خدمة غير محددة" }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <div class="booking-details">
+
+                        <div class="booking-meta">
+                            <span>التاريخ</span>
+                            <strong>{{ booking.date }}</strong>
+                        </div>
+
+                        <div class="booking-meta">
+                            <span>الوقت</span>
+                            <strong>
+                                {% if booking.time %}
+                                    {{ booking.time }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="booking-meta">
+                            <span>الموظفة</span>
+                            <strong>
+                                {% if booking.staff_member %}
+                                    {{ booking.staff_member.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <span class="status status-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+
+                    <div class="actions">
+
+                        <a href="#" class="btn secondary">
+                            التفاصيل
+                        </a>
+
+                        {% if booking.status == "confirmed" %}
+                            <form method="post"
+                                  action="{% url 'bookings:start_service' booking.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn primary">
+                                    بدء الخدمة
+                                </button>
+                            </form>
+
+                        {% elif booking.status == "in_progress" %}
+                            <form method="post"
+                                  action="{% url 'bookings:complete_service' booking.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn success">
+                                    إنهاء الخدمة
+                                </button>
+                            </form>
+
+                        {% elif booking.status == "completed" %}
+                            <span class="btn secondary">
+                                مكتمل
+                            </span>
+
+                        {% else %}
+                            <span class="btn secondary">
+                                غير متاح
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>لا توجد حجوزات</h3>
+            <p>عند وجود حجوزات مرتبطة بهذه الموظفة ستظهر هنا.</p>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}
