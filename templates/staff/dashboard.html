@@ -1,0 +1,105 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+{% block title %}لوحة الموظفة{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'staff/css/staff-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Portal</p>
+        <h1>لوحة الموظفة</h1>
+
+        {% if staff %}
+            <p class="muted">مرحباً {{ staff.name }}، هذه مواعيدك لهذا اليوم.</p>
+        {% else %}
+            <p class="muted warning">لا يوجد ملف موظفة مرتبط بهذا الحساب.</p>
+        {% endif %}
+    </div>
+
+    <div class="date-card">
+        <span>اليوم</span>
+        <strong>{% now "Y-m-d" %}</strong>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <span>حجوزات اليوم</span>
+        <strong>{{ total_today|default:0 }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span>قيد الانتظار</span>
+        <strong>{{ pending_count|default:0 }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span>مؤكدة</span>
+        <strong>{{ confirmed_count|default:0 }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span>مكتملة</span>
+        <strong>{{ completed_count|default:0 }}</strong>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>مواعيد اليوم</h2>
+            <p>قائمة الحجوزات المرتبطة بالموظفة الحالية.</p>
+        </div>
+        <a href="{% url 'scheduling:staff_bookings' %}" class="link-btn">عرض كل الحجوزات</a>
+    </div>
+
+    {% if today_bookings %}
+        <div class="appointments-list">
+            {% for booking in today_bookings %}
+                <article class="appointment-card">
+                    <div class="appointment-time">
+                        {% if booking.time %}
+                            {{ booking.time }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+
+                    <div class="appointment-info">
+                        <h3>
+                            {% if booking.user %}
+                                {{ booking.user.phone }}
+                            {% else %}
+                                عميل غير معروف
+                            {% endif %}
+                        </h3>
+
+                        <p>
+                            {% for item in booking.items.all %}
+                                {{ item.service.name }}{% if not forloop.last %}، {% endif %}
+                            {% empty %}
+                                {{ booking.service|default:"خدمة غير محددة" }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <span class="status status-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>لا توجد مواعيد اليوم</h3>
+            <p>عند وجود حجوزات مرتبطة بهذه الموظفة ستظهر هنا.</p>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}
