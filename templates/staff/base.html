@@ -1,92 +1,79 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beauty Salon</title>
 
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;}
+    <title>
+        {% block title %}
+        Staff Portal
+        {% endblock %}
+    </title>
 
-        :root{
-            --wave-bg:linear-gradient(180deg,#5a00e6,#8a2bff,#c77aff,#f3cbff);
-        }
+    <link rel="stylesheet" href="{% static 'staff/css/staff-base.css' %}">
 
-        body{
-            font-family:"Tajawal",sans-serif;
-            min-height:100vh;
-            background:var(--wave-bg);
-            color:#fff;
-            overflow:hidden;
-            position:relative;
-            padding:20px 0;
-        }
-
-        /* زر الرجوع */
-        .back-btn{
-            position:absolute;top:18px;right:18px;
-            width:40px;height:40px;border-radius:50%;
-            display:flex;align-items:center;justify-content:center;
-            border:none;font-size:18px;color:#fff;
-            background:rgba(255,255,255,.14);backdrop-filter:blur(8px);
-            cursor:pointer;transition:.25s;
-            z-index:20;
-        }
-
-        .back-btn:hover{
-            background:rgba(255,255,255,.22);
-            transform:translateY(-2px);
-        }
-
-        /* الشعار */
-        .center-top{
-            text-align:center;
-            margin-top:40px;
-        }
-
-        .logo-icon svg{
-            width:64px;height:64px;fill:#fff;
-        }
-
-        .logo-title{
-            font-size:32px;font-weight:800;margin-top:10px;
-        }
-
-        .logo-sub{
-            font-size:13px;letter-spacing:3px;opacity:.85;margin-top:-4px;
-        }
-
-        /* الموجات */
-        .waves{
-            position:absolute;bottom:0;width:100%;opacity:.30;z-index:-1;
-        }
-        .waves svg{width:100%;}
-    </style>
+    {% block extra_css %}
+    {% endblock %}
 </head>
 
 <body>
 
-    <button class="back-btn" onclick="history.back()">←</button>
+<div class="layout">
 
-    <div class="center-top">
-        <div class="logo-icon">
-            <svg viewBox="0 0 64 64">
-                <path d="M32 4c-4 6-6 10-6 14s2 8 6 8 6-4 6-8-2-8-6-14zm0 20c-6-4-10-6-14-6s-8 2-8 6 4 6 8 6 8-2 14-6zm0 0c6-4 10-6 14-6s8 2 8 6-4 6-8 6-8-2-14-6zm0 4c-4 6-6 10-6 14s2 8 6 8 6-4 6-8-2-8-6-14z"/>
-            </svg>
-        </div>
-        <div class="logo-title">Beauty Salon</div>
-        <div class="logo-sub">BEAUTY</div>
-    </div>
+    <aside class="sidebar">
+<div class="logo">
 
-    <!-- صفحة مستقلة فارغة بدون أي ربط -->
-    <div style="height:200px;"></div>
-
-    <div class="waves">
-        <svg viewBox="0 0 1440 320">
-            <path fill="#ffffff" fill-opacity="0.33"
-                d="M0,128L80,144C160,160,320,192,480,176C640,160,800,96,960,74.7C1120,53,1280,75,1360,85.3L1440,96V320H0Z"></path>
+    <div class="logo-icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 4c-4 6-6 10-6 14s2 8 6 8 6-4 6-8-2-8-6-14zm0 20c-6-4-10-6-14-6s-8 2-8 6 4 6 8 6 8-2 14-6zm0 0c6-4 10-6 14-6s8 2 8 6-4 6-8 6-8-2-14-6zm0 4c-4 6-6 10-6 14s2 8 6 8 6-4 6-8-2-8-6-14z"/>
         </svg>
     </div>
+
+    <h2>Beauty Salon</h2>
+    <p>BEAUTY</p>
+
+</div>
+        <nav>
+
+            <a href="{% url 'scheduling:staff_dashboard' %}">
+                لوحة التحكم
+            </a>
+
+            <a href="{% url 'scheduling:staff_bookings' %}">
+                الحجوزات
+            </a>
+
+            <a href="{% url 'scheduling:staff_schedule' %}">
+                الجدول
+            </a>
+
+            <a href="{% url 'scheduling:staff_profile' %}">
+                الملف الشخصي
+            </a>
+
+            <a href="{% url 'scheduling:staff_notifications' %}">
+                التنبيهات
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <main class="content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+<script src="{% static 'staff/js/staff-base.js' %}"></script>
+
+{% block extra_js %}
+{% endblock %}
 
 </body>
 </html>
