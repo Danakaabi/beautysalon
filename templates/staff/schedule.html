@@ -1,0 +1,135 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+{% block title %}الجدول | Beauty Salon{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'staff/css/staff-schedule.css' %}?v=99">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Portal</p>
+        <h1>جدول اليوم</h1>
+        <p class="muted">
+            {% if today %}
+                مواعيد يوم {{ today }} مرتبة حسب الوقت.
+            {% else %}
+                مواعيد اليوم مرتبة حسب الوقت.
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="schedule-panel">
+
+    {% if schedule %}
+        <div class="timeline">
+
+            {% for booking in schedule %}
+                <article class="timeline-item">
+
+                    <div class="time-box">
+                        {% if booking.time %}
+                            {{ booking.time.time|time:"H:i" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+
+                    <div class="schedule-card">
+
+                        <div class="schedule-info">
+
+                            <h3>
+                                {% for item in booking.items.all %}
+                                    {{ item.service.name }}{% if not forloop.last %}، {% endif %}
+                                {% empty %}
+                                    {{ booking.service|default:"خدمة غير محددة" }}
+                                {% endfor %}
+                            </h3>
+
+                            <p class="client-line">
+                                {% if booking.user %}
+                                    العميل: {{ booking.user.phone }}
+                                {% else %}
+                                    عميل غير معروف
+                                {% endif %}
+                            </p>
+
+                            <p class="staff-line">
+                                {% if booking.staff_member %}
+                                    الموظفة: {{ booking.staff_member.name }}
+                                {% else %}
+                                    الموظفة: غير محددة
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+                        <div class="schedule-side">
+
+                            <span class="status status-{{ booking.status }}">
+                                {{ booking.get_status_display }}
+                            </span>
+
+                            <div class="schedule-actions">
+
+                             <a
+                               href="{% url 'scheduling:booking_detail' booking.id %}"
+                               class="btn secondary"
+                             >
+                             التفاصيل
+                 
+                             </a>
+
+                                {% if booking.status == "confirmed" %}
+                                    <form method="post"
+                                          action="{% url 'bookings:start_service' booking.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn primary">
+                                            بدء الخدمة
+                                        </button>
+                                    </form>
+
+                                {% elif booking.status == "in_progress" %}
+                                    <form method="post"
+                                          action="{% url 'bookings:complete_service' booking.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn success">
+                                            إنهاء الخدمة
+                                        </button>
+                                    </form>
+
+                                {% elif booking.status == "completed" %}
+                                    <span class="btn disabled">
+                                        مكتمل
+                                    </span>
+
+                                {% else %}
+                                    <span class="btn disabled">
+                                        غير متاح
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>لا توجد مواعيد اليوم</h3>
+            <p>سيظهر جدول الموظفة هنا عند وجود حجوزات لهذا اليوم.</p>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}
