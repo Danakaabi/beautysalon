@@ -39,4 +39,15 @@ urlpatterns = [
         views.staff_notifications,
         name="staff_notifications",
     ),
+    path(
+    "staff/bookings/<int:booking_id>/start/",
+    views.start_booking_service,
+    name="start_booking_service",
+),
+
+path(
+    "staff/bookings/<int:booking_id>/complete/",
+    views.complete_booking_service,
+    name="complete_booking_service",
+),
 ]

@@ -25,6 +25,7 @@
             {% for booking in bookings %}
                 <article class="booking-card">
 
+                    <!-- بيانات العميل والخدمة -->
                     <div class="booking-main">
                         <h3>
                             {% if booking.user %}
@@ -43,6 +44,7 @@
                         </p>
                     </div>
 
+                    <!-- بيانات الحجز -->
                     <div class="booking-details">
 
                         <div class="booking-meta">
@@ -74,19 +76,22 @@
 
                     </div>
 
+                    <!-- حالة الحجز -->
                     <span class="status status-{{ booking.status }}">
                         {{ booking.get_status_display }}
                     </span>
 
+                    <!-- إجراءات الحجز -->
                     <div class="actions">
 
-                        <a href="#" class="btn secondary">
+                        <a href="{% url 'scheduling:booking_detail' booking.id %}"
+                           class="btn secondary">
                             التفاصيل
                         </a>
 
                         {% if booking.status == "confirmed" %}
                             <form method="post"
-                                  action="{% url 'bookings:start_service' booking.id %}">
+                                  action="{% url 'scheduling:start_booking_service' booking.id %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn primary">
                                     بدء الخدمة
@@ -95,7 +100,7 @@
 
                         {% elif booking.status == "in_progress" %}
                             <form method="post"
-                                  action="{% url 'bookings:complete_service' booking.id %}">
+                                  action="{% url 'scheduling:complete_booking_service' booking.id %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn success">
                                     إنهاء الخدمة
@@ -105,6 +110,21 @@
                         {% elif booking.status == "completed" %}
                             <span class="btn secondary">
                                 مكتمل
+                            </span>
+
+                        {% elif booking.status == "pending" %}
+                            <span class="btn secondary">
+                                قيد الانتظار
+                            </span>
+
+                        {% elif booking.status == "canceled" %}
+                            <span class="btn secondary">
+                                ملغي
+                            </span>
+
+                        {% elif booking.status == "no_show" %}
+                            <span class="btn secondary">
+                                لم يحضر
                             </span>
 
                         {% else %}

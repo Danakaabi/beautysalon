@@ -241,3 +241,46 @@ def booking_detail(request, booking_id):
             "booking": booking,
         },
     )
+
+@login_required
+def start_booking_service(request, booking_id):
+    if not staff_required(request):
+        return deny_staff_access(request)
+
+    staff = get_staff_profile(request.user)
+
+    booking = get_object_or_404(
+        Booking,
+        pk=booking_id,
+        staff_member=staff,
+        status="confirmed",
+    )
+
+    booking.status = "in_progress"
+    booking.save(update_fields=["status", "updated_at"])
+
+    messages.success(request, "تم بدء الخدمة بنجاح.")
+    return redirect("scheduling:staff_bookings")
+
+# ============================
+# Complete Booking Service
+# ============================
+@login_required
+def complete_booking_service(request, booking_id):
+    if not staff_required(request):
+        return deny_staff_access(request)
+
+    staff = get_staff_profile(request.user)
+
+    booking = get_object_or_404(
+        Booking,
+        pk=booking_id,
+        staff_member=staff,
+        status="in_progress",
+    )
+
+    booking.status = "completed"
+    booking.save(update_fields=["status", "updated_at"])
+
+    messages.success(request, "تم إنهاء الخدمة بنجاح.")
+    return redirect("scheduling:staff_bookings")
