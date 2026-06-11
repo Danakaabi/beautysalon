@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from bookings.models import Booking
-from .models import Staff
+from .models import Staff, StaffService
 
 
 @login_required
@@ -116,19 +116,91 @@ def staff_schedule(request):
         },
     )
 
-
 @login_required
+
 def staff_profile(request):
+
     staff = getattr(request.user, "staff_profile", None)
 
-    return render(
-        request,
-        "staff/profile.html",
-        {
-            "staff": staff,
-        },
+    if not staff:
+
+        return render(
+
+            request,
+
+            "staff/profile.html",
+
+            {
+
+                "staff": None,
+
+                "total_bookings": 0,
+
+                "completed_bookings": 0,
+
+                "upcoming_bookings": 0,
+
+                "services": [],
+
+            },
+
+        )
+
+    total_bookings = Booking.objects.filter(
+
+        staff_member=staff
+
+    ).count()
+
+    completed_bookings = Booking.objects.filter(
+
+        staff_member=staff,
+
+        status="completed",
+
+    ).count()
+
+    upcoming_bookings = Booking.objects.filter(
+
+        staff_member=staff,
+
+        status__in=["confirmed", "in_progress"],
+
+    ).count()
+
+    services = (
+
+        StaffService.objects
+
+        .filter(staff=staff)
+
+        .select_related("service")
+
+        .order_by("service__name")
+
     )
 
+    return render(
+
+        request,
+
+        "staff/profile.html",
+
+        {
+
+            "staff": staff,
+
+            "total_bookings": total_bookings,
+
+            "completed_bookings": completed_bookings,
+
+            "upcoming_bookings": upcoming_bookings,
+
+            "services": services,
+
+        },
+
+    )
 
 @login_required
 def staff_notifications(request):

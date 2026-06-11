@@ -1,86 +1,97 @@
 {% extends "staff/base.html" %}
+{% load static %}
+
 {% block title %}ملف الموظفة | Beauty Salon{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'staff/css/staff-profile.css' %}?v=1">
+{% endblock %}
 
 {% block content %}
 
-<style>
-    .profile-card {
-        width: 90%;
-        max-width: 420px;
-        margin: 0 auto;
-        padding: 25px;
-        border-radius: 20px;
-        background: rgba(255,255,255,0.18);
-        backdrop-filter: blur(12px);
-        box-shadow: 0 8px 28px rgba(0,0,0,0.22);
-        text-align: center;
-        animation: fadeUp .8s ease;
-    }
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Portal</p>
+        <h1>الملف الشخصي</h1>
+        <p class="muted">بيانات الموظفة والخدمات والإحصائيات.</p>
+    </div>
+</section>
 
-    .staff-avatar {
-        width: 95px;
-        height: 95px;
-        background: #fff;
-        border-radius: 50%;
-        margin: -55px auto 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        border: 4px solid rgba(255,255,255,0.4);
-        box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-    }
+{% if staff %}
 
-    .staff-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+<section class="profile-layout">
 
-    .staff-name {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
+    <div class="profile-card">
+        <div class="staff-avatar">
+            {{ staff.name|slice:":1" }}
+        </div>
 
-    .staff-role {
-        font-size: 14px;
-        opacity: 0.85;
-        margin-bottom: 18px;
-    }
+        <h2>{{ staff.name }}</h2>
+        <p>موظفة في Beauty Salon</p>
 
-    .info-box {
-        text-align: right;
-        margin-top: 15px;
-        padding: 12px 16px;
-        background: rgba(255,255,255,0.12);
-        border-radius: 15px;
-        font-size: 15px;
-        line-height: 1.8;
-    }
+        <div class="profile-info">
+            <div>
+                <span>رقم الجوال</span>
+                <strong>{{ staff.phone|default:"غير محدد" }}</strong>
+            </div>
 
-    .info-box span {
-        font-weight: 700;
-        margin-left: 6px;
-    }
-</style>
-
-<div class="profile-card">
-
-    <div class="staff-avatar">
-        <img src="https://i.imgur.com/4ZQZ4Zm.png" alt="avatar">
+            <div>
+                <span>الحالة</span>
+                <strong>
+                    {% if staff.is_active %}
+                        نشطة
+                    {% else %}
+                        غير نشطة
+                    {% endif %}
+                </strong>
+            </div>
+        </div>
     </div>
 
-    <div class="staff-name">اسم الموظفة</div>
-    <div class="staff-role">موظفة الاستقبال</div>
+    <div class="profile-content">
 
-    <div class="info-box">
-        <div><span>رقم الموظفة:</span> 102</div>
-        <div><span>رقم الجوال:</span> 05xxxxxxxx</div>
-        <div><span>البريد:</span> example@email.com</div>
-        <div><span>الفرع:</span> صالون الرياض</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>إجمالي الحجوزات</span>
+                <strong>{{ total_bookings }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>الحجوزات المكتملة</span>
+                <strong>{{ completed_bookings }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>الحجوزات القادمة</span>
+                <strong>{{ upcoming_bookings }}</strong>
+            </div>
+        </div>
+
+        <div class="services-panel">
+            <h3>الخدمات المقدمة</h3>
+
+            <div class="services-list">
+                {% for item in services %}
+                    <div class="service-pill">
+                        {{ item.service.name }}
+                    </div>
+                {% empty %}
+                    <p class="empty-text">لا توجد خدمات مرتبطة بهذه الموظفة.</p>
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
 
-</div>
+</section>
+
+{% else %}
+
+<section class="empty-state">
+    <h3>لا يوجد ملف موظفة مرتبط بهذا الحساب</h3>
+    <p>يرجى ربط المستخدم بموظفة من لوحة الإدارة.</p>
+</section>
+
+{% endif %}
 
 {% endblock %}

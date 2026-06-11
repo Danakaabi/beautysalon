@@ -32,11 +32,16 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(phone, password, **extra_fields)
 
-
 # ==========================================================
-# 👤 Custom User Model (Login by Phone)
+# 👤 Custom User Model
 # ==========================================================
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = [
+        ("customer", "عميل"),
+        ("staff", "موظفة"),
+        ("admin", "مدير النظام"),
+    ]
+
     phone = models.CharField(
         max_length=20,
         unique=True,
@@ -50,7 +55,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name="الاسم"
     )
 
-    # صلاحيات
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default="customer",
+        verbose_name="نوع الحساب",
+    )
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -64,10 +75,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.phone
 
+    @property
+    def is_customer_user(self):
+        return self.role == "customer"
+
+    @property
+    def is_staff_user(self):
+        return self.role == "staff"
+
+    @property
+    def is_admin_user(self):
+        return self.role == "admin" or self.is_superuser
+
     class Meta:
         verbose_name = "مستخدم"
         verbose_name_plural = "المستخدمون"
-
 
 # ==========================================================
 # 🔢 OTP Model
