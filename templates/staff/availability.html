@@ -1,0 +1,66 @@
+{% extends "staff/base.html" %}
+{% load static %}
+
+{% block title %}
+أوقات الدوام
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'staff/css/staff-availability.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Portal</p>
+        <h1>أوقات الدوام</h1>
+        <p class="muted">
+            الأيام والساعات المتاحة للحجز.
+        </p>
+    </div>
+</section>
+
+{% if availabilities %}
+
+<div class="availability-grid">
+
+    {% for availability in availabilities %}
+    <div class="availability-card">
+
+        <h3 class="availability-day">
+            {{ availability.get_day_of_week_display }}
+        </h3>
+
+        <p class="availability-time">
+            من {{ availability.start_time }}
+            إلى {{ availability.end_time }}
+        </p>
+
+        {% if availability.is_active %}
+            <span class="availability-status active">
+                متاح
+            </span>
+        {% else %}
+            <span class="availability-status inactive">
+                غير متاح
+            </span>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <h3>لا توجد أوقات دوام</h3>
+    <p>
+        لم يتم إضافة أي أوقات عمل لهذه الموظفة بعد.
+    </p>
+</div>
+
+{% endif %}
+
+{% endblock %}

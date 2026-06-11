@@ -23,6 +23,18 @@ urlpatterns = [
     ),
 
     path(
+        "staff/bookings/<int:booking_id>/start/",
+        views.start_booking_service,
+        name="start_booking_service",
+    ),
+
+    path(
+        "staff/bookings/<int:booking_id>/complete/",
+        views.complete_booking_service,
+        name="complete_booking_service",
+    ),
+
+    path(
         "staff/schedule/",
         views.staff_schedule,
         name="staff_schedule",
@@ -35,19 +47,14 @@ urlpatterns = [
     ),
 
     path(
+        "staff/availability/",
+        views.staff_availability,
+        name="staff_availability",
+    ),
+
+    path(
         "staff/notifications/",
         views.staff_notifications,
         name="staff_notifications",
     ),
-    path(
-    "staff/bookings/<int:booking_id>/start/",
-    views.start_booking_service,
-    name="start_booking_service",
-),
-
-path(
-    "staff/bookings/<int:booking_id>/complete/",
-    views.complete_booking_service,
-    name="complete_booking_service",
-),
 ]

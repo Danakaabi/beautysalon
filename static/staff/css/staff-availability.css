@@ -1,0 +1,53 @@
+.availability-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.availability-card {
+    background: #fff;
+    border: 1px solid rgba(120, 70, 100, 0.14);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 12px 30px rgba(80, 40, 60, 0.08);
+}
+
+.availability-day {
+    font-size: 20px;
+    font-weight: 800;
+    color: #4a2438;
+    margin-bottom: 12px;
+}
+
+.availability-time {
+    font-size: 15px;
+    color: #6f5b65;
+    margin-bottom: 16px;
+}
+
+.availability-status {
+    display: inline-flex;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.availability-status.active {
+    background: #e8f6ee;
+    color: #1f7a4d;
+}
+
+.availability-status.inactive {
+    background: #f8e8e8;
+    color: #a83b3b;
+}
+
+.empty-state {
+    background: #fff;
+    border: 1px dashed rgba(120, 70, 100, 0.25);
+    border-radius: 22px;
+    padding: 40px;
+    text-align: center;
+    color: #6f5b65;
+}

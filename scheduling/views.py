@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from bookings.models import Booking
-from .models import Staff, StaffService
+
+from .models import Staff, StaffAvailability, StaffService
 
 
 # ============================
@@ -284,3 +285,40 @@ def complete_booking_service(request, booking_id):
 
     messages.success(request, "تم إنهاء الخدمة بنجاح.")
     return redirect("scheduling:staff_bookings")
+
+#============================
+# Staff Availability
+#============================
+
+@login_required
+def staff_availability(request):
+
+    staff = get_staff_profile(request.user)
+
+    if not staff:
+        messages.error(
+            request,
+            "لا يوجد ملف موظفة مرتبط بهذا الحساب.",
+        )
+
+        return redirect(
+            "scheduling:staff_dashboard",
+        )
+
+    availabilities = (
+        StaffAvailability.objects
+        .filter(staff=staff)
+        .order_by(
+            "day_of_week",
+            "start_time",
+        )
+    )
+
+    return render(
+        request,
+        "staff/availability.html",
+        {
+            "staff": staff,
+            "availabilities": availabilities,
+        },
+    )
