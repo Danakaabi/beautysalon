@@ -974,8 +974,8 @@ Staff Scheduling Foundation
 ```
 
 ### Project Maturity
-
-`Frontend UI/UX       ███████████████████░   95%
+```
+Frontend UI/UX        ███████████████████░   95%
 Authentication        ██████████████████░░   90%
 Booking Workflow      ████████████████████  100%
 Database Design       ███████████████████░   95%
