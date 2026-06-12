@@ -1,6 +1,7 @@
 ![Beauty Salon Management System - Final ERD](assets/Beauty%20Salon%20Management%20System%20-%20Final%20ERD.PNG)
 
 ![Beauty Salon Management System - Data Flow Diagram (DFD)](assets/Beauty%20Salon%20Management%20System%20-%20Data%20Flow%20Diagram%20(DFD).PNG)
+
 # Beauty Salon Management System
 ## Project Documentation Report
 
