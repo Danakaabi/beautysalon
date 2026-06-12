@@ -1,7 +1,6 @@
+![Beauty Salon Management System - Final ERD](assets/Beauty%20Salon%20Management%20System%20-%20Final%20ERD.PNG)
 
-<img width="1536" height="1024" alt="Beauty Salon Management System - Final ERD" src="https://github.com/user-attachments/assets/f4d27bca-c570-48d0-b2cd-4e5134b9cbd3" />
-<img width="1536" height="1024" alt="Beauty Salon Management System - Data Flow Diagram (DFD)" src="https://github.com/user-attachments/assets/eca84ae8-9920-415a-a375-478f28a502a9" />
-
+![Beauty Salon Management System - Data Flow Diagram (DFD)](assets/Beauty%20Salon%20Management%20System%20-%20Data%20Flow%20Diagram%20(DFD).PNG)
 # Beauty Salon Management System
 ## Project Documentation Report
 
@@ -155,12 +154,11 @@ Duration Management
 ```
 
 ---
-
 ## 5.3 Scheduling Module
 
 ### Purpose
 
-Manage salon staff and service capabilities.
+Manage salon staff, availability, schedules, and service assignments.
 
 ### Models
 
@@ -168,12 +166,12 @@ Manage salon staff and service capabilities.
 
 ```text
 id
+user_id
 name
 phone
 is_active
 created_at
 updated_at
-```
 
 #### StaffService
 
@@ -183,13 +181,28 @@ staff_id
 service_id
 ```
 
+### StaffAvailability
+
+```text
+id
+staff_id
+day_of_week
+start_time
+end_time
+is_active
+created_at
+updated_at
+```
+
 ### Responsibilities
 
 ```text
 Staff Management
+Staff Portal
 Service Assignment
-Availability Planning
-Scheduling Foundation
+Availability Management
+Schedule Management
+Booking Execution
 ```
 
 ---
@@ -496,18 +509,42 @@ Booked slots appear as:
 ```
 
 and cannot be selected again.
-# 13. Staff Portal
 
 ### Templates
 
+# 13. Staff Portal
+
+### Implemented Pages
+
 ```text
-staff/base.html
 staff/dashboard.html
 staff/bookings.html
+staff/booking-detail.html
 staff/profile.html
 staff/schedule.html
+staff/availability.html
 staff/notifications.html
 ```
+Implemented Features
+Staff Dashboard
+Today's Appointments
+Booking Details
+Start Service
+Complete Service
+Profile Management
+Schedule View
+Availability Management
+Notifications Interface
+
+URLs
+
+/schedule/staff/dashboard/
+/schedule/staff/bookings/
+/schedule/staff/bookings/<id>/
+/schedule/staff/profile/
+/schedule/staff/schedule/
+/schedule/staff/availability/
+/schedule/staff/notifications/
 
 ### Planned Features
 
@@ -637,6 +674,19 @@ Booking
     │
     ▼
  TimeSlot
+
+ CustomUser
+      │ 1
+      │
+      ▼
+    Staff
+      │ 1
+      │
+      ▼
+StaffAvailability
+
+
+
 ```
 
 ---
@@ -717,6 +767,44 @@ id (PK)
 time
 ```
 
+```text
+
+Staff
+
+-----------
+
+id (PK)
+
+user_id (FK)
+
+name
+
+phone
+
+is_active
+
+        1
+
+        │
+
+        ▼
+
+StaffAvailability
+
+-----------
+
+id (PK)
+
+staff_id (FK)
+
+day_of_week
+
+start_time
+
+end_time
+
+is_active
+
 ---
 # 18. Implemented Features
 
@@ -773,9 +861,62 @@ time
 ✅ Responsive User Interface
 
 ✅ Modular Django Architecture
+
+ Staff Portal
+
+✅ Staff Dashboard
+
+✅ Staff Profile
+
+✅ Staff Schedule
+
+✅ Staff Availability Management
+
+✅ Booking Details Page
+
+✅ Service Start Workflow
+
+✅ Service Completion Workflow
+
+✅ Staff ↔ User Relationship
+
+✅ Role-Based Access Control
+
+✅ Protected Staff Pages
 ---
 
-# 19. Future Enhancements
+# 19. Staff Availability System
+
+The Staff Availability System allows salon employees to define their working days and available booking hours.
+
+### Model
+
+```text
+StaffAvailability
+
+Features
+Working Day Definition
+Availability Tracking
+Schedule Visibility
+Future Booking Validation Support
+
+Example
+Sunday
+09:00 → 17:00
+
+Monday
+09:00 → 17:00
+
+Tuesday
+09:00 → 17:00
+
+Future Integration
+Prevent Booking Outside Working Hours
+Available Slot Generation
+Automatic Schedule Validation
+
+
+# 20. Future Enhancements
 
 ## Authentication
 
@@ -816,7 +957,7 @@ time
 - Mobile Application Integration
 
 ---
-# 20. Engineering Evaluation
+# 21. Engineering Evaluation
 
 ### Current Project Classification
 
@@ -834,23 +975,23 @@ Staff Scheduling Foundation
 
 ### Project Maturity
 
-```text
-Frontend UI/UX        ██████████ 95%
-Authentication        ████████░░ 80%
-Booking Workflow      ██████████ 100%
-Database Design       ██████████ 95%
-Service Catalog       ██████████ 95%
-Staff Management      ███████░░░ 70%
-Notifications         ██░░░░░░░░ 20%
-Billing               ██░░░░░░░░ 20%
-Administration        ███░░░░░░░ 30%
-Analytics             █░░░░░░░░░ 10%
+`Frontend UI/UX       ███████████████████░   95%
+Authentication        ██████████████████░░   90%
+Booking Workflow      ████████████████████  100%
+Database Design       ███████████████████░   95%
+Service Catalog       ███████████████████░   95%
+Staff Portal          ████████████████████  100%
+Staff Availability    ████████████████████  100%
+Notifications         █████░░░░░░░░░░░░░░   25%
+Billing               ████░░░░░░░░░░░░░░░   20%
+Administration        ███████░░░░░░░░░░░░   35%
+Analytics             ██░░░░░░░░░░░░░░░░░   10%
 ```
 
 ### Overall Progress
 
 ```text
-≈ 85% MVP Completion
+≈ ≈ 88% MVP Completion
 ```
 
 ---
@@ -869,6 +1010,12 @@ Modular Django Architecture
 Session-Based Authentication
 Responsive UI Design
 Migration-Based Database Evolution
+Role-Based Authorization
+Staff Portal Architecture
+Availability Scheduling Pattern
+Protected Route Pattern
+One-to-One User Mapping
+Booking Lifecycle Management
 ```
 
 
