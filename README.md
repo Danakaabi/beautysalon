@@ -3,6 +3,7 @@
 ![Beauty Salon Management System - Data Flow Diagram (DFD)](assets/Beauty%20Salon%20Management%20System%20-%20Data%20Flow%20Diagram%20(DFD).PNG)
 
 # Beauty Salon Management System
+
 ## Project Documentation Report
 
 ---
@@ -18,8 +19,6 @@ The project follows a modular design approach by separating business domains int
 ---
 
 # 2. Project Objectives
-
-The primary objectives of the system are:
 
 - Simplify appointment booking for customers.
 - Organize salon services and categories.
@@ -38,11 +37,12 @@ The primary objectives of the system are:
 |------------|------------|
 | Backend | Django |
 | Language | Python |
-| Frontend | HTML, CSS, JavaScript |
+| Frontend | HTML |
+| Styling | CSS |
+| Client Logic | JavaScript |
 | Templates | Django Templates |
-| Database | SQLite (Development) |
-| Authentication | OTP-Based Login |
-| Session Management | Django Sessions |
+| Database | SQLite |
+| Authentication | OTP Login |
 | ORM | Django ORM |
 
 ---
@@ -63,103 +63,44 @@ Beauty Salon Management System
 │
 ├── templates
 ├── static
-├── media
+├── assets
 └── salon_project
-```
-
-This modular architecture improves maintainability, scalability, and separation of concerns.
 
 ---
-
 # 5. Application Modules
 
 ## 5.1 Accounts Module
 
-### Purpose
+### Models
 
-Manage customer authentication and account access.
-
-### Responsibilities
-
-- OTP generation
-- OTP verification
-- User authentication
-- Session creation
-- Customer dashboard access
-
-### Main Components
-
-```text
 CustomUser
-OTP
-generate_otp()
-verify_otp()
-```
 
-### Authentication Flow
+### Features
 
-```text
-Customer enters phone number
-            ↓
-Generate OTP
-            ↓
-OTP Verification
-            ↓
-Login Success
-            ↓
-Customer Dashboard
-```
+- OTP Generation
+- OTP Verification
+- Session Authentication
+- Customer Login
 
 ---
 
 ## 5.2 Catalog Module
 
-### Purpose
-
-Manage salon services and categories.
-
 ### Models
 
-#### ServiceCategory
+- ServiceCategory
+- Service
 
-```text
-id
-name
-description
-is_active
-created_at
-updated_at
-```
+### Features
 
-#### Service
-
-```text
-id
-category_id
-name
-description
-price
-duration_minutes
-is_active
-created_at
-updated_at
-```
-
-### Responsibilities
-
-```text
-Service Management
-Pricing Management
-Service Categorization
-Duration Management
-```
+- Service Management
+- Pricing Management
+- Service Categorization
+- Duration Management
 
 ---
+
 ## 5.3 Scheduling Module
-
-### Purpose
-
-Manage salon staff, availability, schedules, and service assignments.
 
 ### Models
 
@@ -174,17 +115,12 @@ is_active
 created_at
 updated_at
 
-#### StaffService
-
-```text
+StaffService
 id
 staff_id
 service_id
-```
 
-### StaffAvailability
-
-```text
+StaffAvailability
 id
 staff_id
 day_of_week
@@ -193,331 +129,132 @@ end_time
 is_active
 created_at
 updated_at
-```
 
-### Responsibilities
 
-```text
+Features
 Staff Management
 Staff Portal
 Service Assignment
 Availability Management
 Schedule Management
 Booking Execution
-```
 
----
-
-## 5.4 Bookings Module
-
-### Purpose
-
-Handle appointment booking operations.
-
-### Models
-
-#### TimeSlot
-
-```text
+5.4 Bookings Module
+Models
+TimeSlot
 id
 time
-```
 
-#### Booking
-
-```text
+Booking
 id
 user_id
 date
 time_id
 staff_member_id
 status
-total_amount
 notes
 created_at
 updated_at
-```
 
-### Status Values
-
-```text
-pending
-confirmed
-completed
-canceled
-no_show
-```
-
-#### BookingItem
-
-```text
+BookingItem
 id
 booking_id
 service_id
-price_at_booking
-duration_at_booking
-```
+price
+quantity
+total
+
+
+Status Values
+pending
+confirmed
+in_progress
+completed
+canceled
+no_show
 
 ---
-
-# 6. Booking Workflow
-
-## Step 1 — Service Selection
-
-```text
-Customer
-    ↓
-Choose Service
-```
-
-## Step 2 — Date Selection
-
-```text
-Customer
-    ↓
-Choose Date
-```
-
-## Step 3 — Time Slot Selection
-
-```text
-Customer
-    ↓
-Choose Time Slot
-```
-
-## Step 4 — Booking Confirmation
-
-Customer reviews:
-
-```text
-Service
-Date
-Time
-Phone Number
-```
-
-## Step 5 — Booking Creation
-
-```text
-Booking
-    ↓
-BookingItem
-```
-
-Status:
-
-```text
-confirmed
-```
-
-## Step 6 — Customer Journey 
 # 6. Customer Journey
 
-The system provides a complete end-to-end customer booking experience.
 
-## Step 1 — Authentication
+Phone Login
+      ↓
+OTP Verification
+      ↓
+Service Selection
+      ↓
+Staff Selection
+      ↓
+Date Selection
+      ↓
+Time Selection
+      ↓
+Booking Confirmation
+      ↓
+Booking Success
+      ↓
+Customer Dashboard
 
-```text
-Enter Phone Number
-        ↓
-Generate OTP
-        ↓
-Verify OTP
-        ↓
-Customer Login
-```
-
-## Step 2 — Service Selection
-
-```text
-Customer
-        ↓
-Select Service
-```
-
-## Step 3 — Staff Selection
-
-```text
-Customer
-        ↓
-Select Staff
-
-OR
-
-Any Available Staff
-```
-
-## Step 4 — Date Selection
-
-```text
-Customer
-        ↓
-Select Date
-```
-
-## Step 5 — Time Selection
-
-```text
-Customer
-        ↓
-Select Available Time Slot
-```
-
-## Step 6 — Booking Confirmation
-
-Customer reviews:
-
-```text
-Service
-Staff Member
-Date
-Time
-Phone Number
-Total Amount
-```
-
-## Step 7 — Booking Creation
-
-```text
-Booking
-        ↓
-BookingItem
-        ↓
-Price Calculation
-```
-
-Status:
-
-```text
-confirmed
-```
-
-## Step 8 — Success Page
-
-Displays:
-
-```text
-Booking Reference
-Service Details
-Staff Details
-Date
-Time
-Total Amount
-```
-
-## Step 9 — Customer Dashboard
-
-Provides:
-
-```text
-Upcoming Appointments
-Booking History
-Edit Booking
-Cancel Booking
-```
 ---
-# 10.Booking Engine 
+# 7. Booking Workflow
 
+Customer
+      ↓
+Choose Service
+      ↓
+Choose Staff
+      ↓
+Choose Date
+      ↓
+Choose Time
+      ↓
+Create Booking
+      ↓
+Create Booking Items
+      ↓
+Confirmed Booking
 
-The booking engine is responsible for validating appointments and ensuring scheduling consistency.
+---
 
-## Responsibilities
+# 8. Booking Engine
 
-```text
+Features
 Booking Creation
 Booking Validation
 Booking Editing
 Booking Cancellation
-Price Calculation
-Staff Assignment
-```
-
-## Features
-
-```text
 Conflict Prevention
 Duplicate Booking Detection
-Staff Availability Validation
-Booking History Tracking
-Appointment Rescheduling
-```
-# 11. Customer Portal
-
-## Features
-
-### Upcoming Appointment
-
-Displays:
-
-```text
-Services
-Date
-Time
-Status
-Total Amount
-```
-
-### Actions
-
-```text
-Edit Booking
-Cancel Booking
-```
-
-### Appointment History
-
-Displays previous appointments.
+Price Calculation
+Staff Assignment
 
 ---
-# 12. Conflict Prevention Engine
+# 9. Customer Portal
 
-One of the most important implemented features is preventing scheduling conflicts.
+Features
+Upcoming Appointments
+Booking History
+Cancel Booking
+Edit Booking
+Booking Details
 
-The system validates:
+---
+# 10. Conflict Prevention Engine
 
-```text
-Date
-Time Slot
-Staff Member
-Booking Status
-```
+Validation Rules
 
-Before creating a booking.
+Date Validation
+Time Validation
+Staff Validation
+Status Validation
+Duplicate Booking Prevention
+Booked Slot Locking
 
-## Example
+---
+11. Staff Portal
 
-```text
-Amal
-18-06-2026
-11:00
-```
+Implemented Pages
 
-If already booked:
-
-```text
-Booking Rejected
-```
-
-and the customer receives a validation message.
-
-## Booked Slot Locking
-
-Booked slots appear as:
-
-```text
-11:00 (Booked)
-```
-
-and cannot be selected again.
-
-### Templates
-
-# 13. Staff Portal
-
-### Implemented Pages
-
-```text
 staff/dashboard.html
 staff/bookings.html
 staff/booking-detail.html
@@ -525,8 +262,10 @@ staff/profile.html
 staff/schedule.html
 staff/availability.html
 staff/notifications.html
-```
+
+---
 Implemented Features
+
 Staff Dashboard
 Today's Appointments
 Booking Details
@@ -536,6 +275,8 @@ Profile Management
 Schedule View
 Availability Management
 Notifications Interface
+
+---
 
 URLs
 
@@ -547,352 +288,9 @@ URLs
 /schedule/staff/availability/
 /schedule/staff/notifications/
 
-### Planned Features
-
-```text
-Assigned Appointments
-Availability Management
-Schedule Control
-Notifications
-Performance Tracking
-```
-
 ---
-
-# 14. Notifications Center
-
-### Purpose
-
-Centralized notification management.
-
-### Planned Notifications
-
-```text
-Appointment Confirmation
-Appointment Reminder
-Booking Cancellation
-Staff Notifications
-Administrative Alerts
-```
-
----
-
-# 15. Billing Module
-
-### Purpose
-
-Manage payments and invoices.
-
-### Future Features
-
-```text
-Invoice Generation
-Online Payments
-Payment Tracking
-Transaction History
-Refund Management
-```
-
----
-
-# 16. Control Panel
-
-### Purpose
-
-Administrative management.
-
-### Planned Features
-
-```text
-Customer Management
-Service Management
-Category Management
-Staff Management
-Booking Management
-Reports
-Analytics
-```
-
----
-
-# 16. User Interface Design
-
-### Design Characteristics
-
-- RTL Arabic Support
-- Mobile Friendly
-- Responsive Layout
-- Gradient-Based Design
-- Glassmorphism Components
-- Consistent Branding
-
-### Primary Colors
-
-```text
-#5A00E6
-#8A2BFF
-#C77AFF
-#F3CBFF
-#00D5C3
-```
-
----
-
-# 17. Database Design
-
-## Current Core Entities
-
-```text
-ServiceCategory
-        │ 1
-        │
-        ▼
-      Service
-        ▲
-        │
-        │ M
-   StaffService
-        │
-        ▼
-      Staff
-
-CustomUser
-      │ 1
-      │
-      ▼
-    Booking
-      │ 1
-      │
-      ▼
-  BookingItem
-      │ M
-      │
-      ▼
-    Service
-
-Booking
-    │ M
-    │
-    ▼
- TimeSlot
-
- CustomUser
-      │ 1
-      │
-      ▼
-    Staff
-      │ 1
-      │
-      ▼
-StaffAvailability
-
-
-
-```
-
----
-
-# 14. ERD
-
-```text
-CustomUser
------------
-id (PK)
-phone
-...
-
-        1
-        │
-        ▼
-Booking
------------
-id (PK)
-user_id (FK)
-date
-time_id (FK)
-staff_member_id (FK)
-status
-total_amount
-notes
-created_at
-updated_at
-
-        1
-        │
-        ▼
-BookingItem
------------
-id (PK)
-booking_id (FK)
-service_id (FK)
-price_at_booking
-duration_at_booking
-
-        M
-        │
-        ▼
-Service
------------
-id (PK)
-category_id (FK)
-name
-price
-duration_minutes
-
-        M
-        │
-        ▼
-ServiceCategory
------------
-id (PK)
-name
-
-Staff
------------
-id (PK)
-name
-phone
-
-        M
-        │
-        ▼
-StaffService
------------
-id (PK)
-staff_id (FK)
-service_id (FK)
-
-TimeSlot
------------
-id (PK)
-time
-```
-
-```text
-
-Staff
-
------------
-
-id (PK)
-
-user_id (FK)
-
-name
-
-phone
-
-is_active
-
-        1
-
-        │
-
-        ▼
-
-StaffAvailability
-
------------
-
-id (PK)
-
-staff_id (FK)
-
-day_of_week
-
-start_time
-
-end_time
-
-is_active
-
----
-# 18. Implemented Features
-
-## Completed Features
-
-✅ OTP Authentication
-
-✅ Service Categories
-
-✅ Service Catalog
-
-✅ Staff Management Foundation
-
-✅ Staff-Service Assignment
-
-✅ Service Selection
-
-✅ Staff Selection
-
-✅ Automatic Staff Assignment
-
-✅ Date Selection
-
-✅ Time Selection
-
-✅ Booking Confirmation
-
-✅ Appointment Creation
-
-✅ Booking Success Page
-
-✅ Customer Dashboard
-
-✅ Appointment History
-
-✅ Appointment Cancellation
-
-✅ Appointment Rescheduling
-
-✅ Booking Update Without Record Duplication
-
-✅ Duplicate Booking Prevention
-
-✅ Conflict Detection
-
-✅ Booked Slot Locking
-
-✅ BookingItem Architecture
-
-✅ Dynamic Price Calculation
-
-✅ Total Amount Tracking
-
-✅ Responsive User Interface
-
-✅ Modular Django Architecture
-
- Staff Portal
-
-✅ Staff Dashboard
-
-✅ Staff Profile
-
-✅ Staff Schedule
-
-✅ Staff Availability Management
-
-✅ Booking Details Page
-
-✅ Service Start Workflow
-
-✅ Service Completion Workflow
-
-✅ Staff ↔ User Relationship
-
-✅ Role-Based Access Control
-
-✅ Protected Staff Pages
----
-
-# 19. Staff Availability System
-
-The Staff Availability System allows salon employees to define their working days and available booking hours.
-
-### Model
-
-```text
+# 12. Staff Availability System
+Model
 StaffAvailability
 
 Features
@@ -901,15 +299,12 @@ Availability Tracking
 Schedule Visibility
 Future Booking Validation Support
 
+
 Example
-Sunday
-09:00 → 17:00
+Sunday      09:00 → 17:00
+Monday      09:00 → 17:00
+Tuesday     09:00 → 17:00
 
-Monday
-09:00 → 17:00
-
-Tuesday
-09:00 → 17:00
 
 Future Integration
 Prevent Booking Outside Working Hours
@@ -917,65 +312,153 @@ Available Slot Generation
 Automatic Schedule Validation
 
 
-# 20. Future Enhancements
+---
+# 13. Notifications Center
 
-## Authentication
+Planned Features
+Appointment Confirmation
+Appointment Reminder
+Booking Cancellation
+Staff Notifications
+Administrative Alerts
 
-- SMS Provider Integration
-- OTP Expiration Logic
-- Rate Limiting
+---
+# 14. Billing Module
 
-## Booking
+Planned Features
+Invoice Generation
+Online Payments
+Payment Tracking
+Refund Management
 
-- Staff Selection
-- Conflict Detection
-- Multi-Service Booking UI
-- Service Duration Validation
+---
+# 15. Control Panel
+Planned Features
+Customer Management
+Staff Management
+Booking Management
+Reports
+Analytics
 
-## Notifications
+---
+# 16. User Interface Design
+Features
+RTL Arabic Support
+Responsive Layout
+Mobile Friendly
+Gradient Design
+Glassmorphism Components
 
-- SMS Reminders
-- Email Notifications
-- WhatsApp Integration
+---
+# 17. Database Design
 
-## Billing
+CustomUser
+      │
+      ▼
+    Staff
+      │
+      ▼
+StaffAvailability
 
-- Payment Gateway Integration
-- Invoice Generation
+CustomUser
+      │
+      ▼
+   Booking
+      │
+      ▼
+ BookingItem
+      │
+      ▼
+   Service
+---
 
-## Administration
+# 18. ERD
 
-- Advanced Analytics
-- Reports Dashboard
-- Branch Management
+Main Entities
 
-## Scalability
+CustomUser
+Staff
+StaffAvailability
+ServiceCategory
+Service
+StaffService
+Booking
+BookingItem
+TimeSlot
 
-- PostgreSQL Migration
-- Redis Caching
-- REST API Development
-- React Frontend
-- Mobile Application Integration
+
+---
+
+# 19. Implemented Features
+
+✅ OTP Authentication
+✅ Service Categories
+✅ Service Catalog
+✅ Staff Management Foundation
+✅ Staff-Service Assignment
+✅ Service Selection
+✅ Staff Selection
+✅ Automatic Staff Assignment
+✅ Date Selection
+✅ Time Selection
+✅ Booking Confirmation
+✅ Appointment Creation
+✅ Booking Success Page
+✅ Customer Dashboard
+✅ Appointment History
+✅ Appointment Cancellation
+✅ Appointment Rescheduling
+✅ Duplicate Booking Prevention
+✅ Conflict Detection
+✅ Booked Slot Locking
+✅ Dynamic Price Calculation
+✅ Responsive UI
+✅ Modular Django Architecture
+✅ Staff Portal
+✅ Staff Dashboard
+✅ Staff Profile
+✅ Staff Schedule
+✅ Staff Availability Management
+✅ Booking Details Page
+✅ Service Start Workflow
+✅ Service Completion Workflow
+✅ Staff ↔ User Relationship
+✅ Role-Based Access Control
+✅ Protected Staff Pages
+
+---
+
+#20. Future Enhancements
+
+Notifications
+SMS Reminders
+Email Notifications
+WhatsApp Integration
+
+Billing
+Online Payments
+Invoices
+Payment Tracking
+
+Analytics
+Revenue Analytics
+Staff Performance
+Booking Analytics
+Customer Analytics
+
+---
+AI Layer
+Customer Behavior Analysis
+No-show Prediction
+Cancellation Prediction
+Revenue Forecasting
+AI Recommendations
+Automation Agents
 
 ---
 # 21. Engineering Evaluation
 
-### Current Project Classification
-
-```text
-Salon Management System
-
-with
-
-Appointment Booking Platform
-
-Customer Self-Service Portal
-
-Staff Scheduling Foundation
-```
-
-### Project Maturity
-```
+Project Maturity
 Frontend UI/UX        ███████████████████░   95%
 Authentication        ██████████████████░░   90%
 Booking Workflow      ████████████████████  100%
@@ -987,21 +470,15 @@ Notifications         █████░░░░░░░░░░░░░░ 
 Billing               ████░░░░░░░░░░░░░░░   20%
 Administration        ███████░░░░░░░░░░░░   35%
 Analytics             ██░░░░░░░░░░░░░░░░░   10%
-```
 
-### Overall Progress
 
-```text
-≈ ≈ 88% MVP Completion
-```
+Overall Progress
 
+≈ 88% MVP Completion
 ---
 
-# 21. Engineering Assessment
+# 22. Engineering Assessment
 
-The project now demonstrates:
-
-```text
 Normalized Database Design
 One-to-Many Relationships
 Many-to-Many Relationships
@@ -1017,16 +494,10 @@ Availability Scheduling Pattern
 Protected Route Pattern
 One-to-One User Mapping
 Booking Lifecycle Management
-```
-
-
 
 ---
+# 23. Conclusion
 
-# 22. Conclusion
-
-The Beauty Salon Management System has evolved from a simple appointment booking application into a structured salon management platform.
-
-The current implementation supports customer authentication, service catalog management, staff-service assignment, appointment booking, booking history, and scalable database architecture.
-
-The project is prepared for future expansion into advanced scheduling, conflict prevention, notifications, billing, analytics, REST APIs, React frontend integration, and mobile applications while maintaining a clean and maintainable Django architecture.
+The Beauty Salon Management System has evolved from a simple booking application into a structured salon management platform.
+The current implementation supports customer authentication, service catalog management, staff-service assignment, appointment booking, booking history, staff availability management, and a dedicated staff portal.
+The project is prepared for future expansion into notifications, billing, analytics, AI-powered customer behavior analysis, automation agents, REST APIs, React integration, and mobile applications.
