@@ -65,17 +65,19 @@ Beauty Salon Management System
 ├── static
 ├── assets
 └── salon_project
+```
 
 ---
 
 # 5. Application Modules
 
-
 ## 5.1 Accounts Module
 
 ### Models
 
+```text
 CustomUser
+```
 
 ### Features
 
@@ -90,8 +92,10 @@ CustomUser
 
 ### Models
 
-- ServiceCategory
-- Service
+```text
+ServiceCategory
+Service
+```
 
 ### Features
 
@@ -116,13 +120,19 @@ phone
 is_active
 created_at
 updated_at
+```
 
-StaffService
+#### StaffService
+
+```text
 id
 staff_id
 service_id
+```
 
-StaffAvailability
+#### StaffAvailability
+
+```text
 id
 staff_id
 day_of_week
@@ -131,23 +141,33 @@ end_time
 is_active
 created_at
 updated_at
+```
 
+### Features
 
-Features
-Staff Management
-Staff Portal
-Service Assignment
-Availability Management
-Schedule Management
-Booking Execution
+- Staff Management
+- Staff Portal
+- Service Assignment
+- Availability Management
+- Schedule Management
+- Booking Execution
 
-5.4 Bookings Module
-Models
-TimeSlot
+---
+
+## 5.4 Bookings Module
+
+### Models
+
+#### TimeSlot
+
+```text
 id
 time
+```
 
-Booking
+#### Booking
+
+```text
 id
 user_id
 date
@@ -157,28 +177,35 @@ status
 notes
 created_at
 updated_at
+```
 
-BookingItem
+#### BookingItem
+
+```text
 id
 booking_id
 service_id
 price
 quantity
 total
+```
 
+### Status Values
 
-Status Values
+```text
 pending
 confirmed
 in_progress
 completed
 canceled
 no_show
+```
 
 ---
+
 # 6. Customer Journey
 
-
+```text
 Phone Login
       ↓
 OTP Verification
@@ -196,10 +223,13 @@ Booking Confirmation
 Booking Success
       ↓
 Customer Dashboard
+```
 
 ---
+
 # 7. Booking Workflow
 
+```text
 Customer
       ↓
 Choose Service
@@ -215,12 +245,15 @@ Create Booking
 Create Booking Items
       ↓
 Confirmed Booking
+```
 
 ---
 
 # 8. Booking Engine
 
-Features
+### Features
+
+```text
 Booking Creation
 Booking Validation
 Booking Editing
@@ -229,34 +262,44 @@ Conflict Prevention
 Duplicate Booking Detection
 Price Calculation
 Staff Assignment
+```
 
 ---
+
 # 9. Customer Portal
 
-Features
+### Features
+
+```text
 Upcoming Appointments
 Booking History
 Cancel Booking
 Edit Booking
 Booking Details
+```
 
 ---
+
 # 10. Conflict Prevention Engine
 
-Validation Rules
+### Validation Rules
 
+```text
 Date Validation
 Time Validation
 Staff Validation
 Status Validation
 Duplicate Booking Prevention
 Booked Slot Locking
+```
 
 ---
-11. Staff Portal
 
-Implemented Pages
+# 11. Staff Portal
 
+### Implemented Pages
+
+```text
 staff/dashboard.html
 staff/bookings.html
 staff/booking-detail.html
@@ -264,10 +307,11 @@ staff/profile.html
 staff/schedule.html
 staff/availability.html
 staff/notifications.html
+```
 
----
-Implemented Features
+### Implemented Features
 
+```text
 Staff Dashboard
 Today's Appointments
 Booking Details
@@ -277,11 +321,11 @@ Profile Management
 Schedule View
 Availability Management
 Notifications Interface
+```
 
----
+### URLs
 
-URLs
-
+```text
 /schedule/staff/dashboard/
 /schedule/staff/bookings/
 /schedule/staff/bookings/<id>/
@@ -289,71 +333,103 @@ URLs
 /schedule/staff/schedule/
 /schedule/staff/availability/
 /schedule/staff/notifications/
+```
 
 ---
-# 12. Staff Availability System
-Model
-StaffAvailability
 
-Features
+# 12. Staff Availability System
+
+### Model
+
+```text
+StaffAvailability
+```
+
+### Features
+
+```text
 Working Day Definition
 Availability Tracking
 Schedule Visibility
 Future Booking Validation Support
+```
 
+### Example
 
-Example
+```text
 Sunday      09:00 → 17:00
 Monday      09:00 → 17:00
 Tuesday     09:00 → 17:00
+```
 
+### Future Integration
 
-Future Integration
+```text
 Prevent Booking Outside Working Hours
 Available Slot Generation
 Automatic Schedule Validation
-
+```
 
 ---
+
 # 13. Notifications Center
 
-Planned Features
+### Planned Features
+
+```text
 Appointment Confirmation
 Appointment Reminder
 Booking Cancellation
 Staff Notifications
 Administrative Alerts
+```
 
 ---
+
 # 14. Billing Module
 
-Planned Features
+### Planned Features
+
+```text
 Invoice Generation
 Online Payments
 Payment Tracking
 Refund Management
+```
 
 ---
+
 # 15. Control Panel
-Planned Features
+
+### Planned Features
+
+```text
 Customer Management
 Staff Management
 Booking Management
 Reports
 Analytics
+```
 
 ---
+
 # 16. User Interface Design
-Features
+
+### Features
+
+```text
 RTL Arabic Support
 Responsive Layout
 Mobile Friendly
 Gradient Design
 Glassmorphism Components
+```
 
 ---
+
 # 17. Database Design
 
+```text
 CustomUser
       │
       ▼
@@ -372,12 +448,15 @@ CustomUser
       │
       ▼
    Service
+```
+
 ---
 
 # 18. ERD
 
-Main Entities
+### Main Entities
 
+```text
 CustomUser
 Staff
 StaffAvailability
@@ -387,78 +466,83 @@ StaffService
 Booking
 BookingItem
 TimeSlot
-
+```
 
 ---
 
 # 19. Implemented Features
 
-✅ OTP Authentication
-✅ Service Categories
-✅ Service Catalog
-✅ Staff Management Foundation
-✅ Staff-Service Assignment
-✅ Service Selection
-✅ Staff Selection
-✅ Automatic Staff Assignment
-✅ Date Selection
-✅ Time Selection
-✅ Booking Confirmation
-✅ Appointment Creation
-✅ Booking Success Page
-✅ Customer Dashboard
-✅ Appointment History
-✅ Appointment Cancellation
-✅ Appointment Rescheduling
-✅ Duplicate Booking Prevention
-✅ Conflict Detection
-✅ Booked Slot Locking
-✅ Dynamic Price Calculation
-✅ Responsive UI
-✅ Modular Django Architecture
-✅ Staff Portal
-✅ Staff Dashboard
-✅ Staff Profile
-✅ Staff Schedule
-✅ Staff Availability Management
-✅ Booking Details Page
-✅ Service Start Workflow
-✅ Service Completion Workflow
-✅ Staff ↔ User Relationship
-✅ Role-Based Access Control
-✅ Protected Staff Pages
+- ✅ OTP Authentication
+- ✅ Service Categories
+- ✅ Service Catalog
+- ✅ Staff Management Foundation
+- ✅ Staff-Service Assignment
+- ✅ Service Selection
+- ✅ Staff Selection
+- ✅ Automatic Staff Assignment
+- ✅ Date Selection
+- ✅ Time Selection
+- ✅ Booking Confirmation
+- ✅ Appointment Creation
+- ✅ Booking Success Page
+- ✅ Customer Dashboard
+- ✅ Appointment History
+- ✅ Appointment Cancellation
+- ✅ Appointment Rescheduling
+- ✅ Duplicate Booking Prevention
+- ✅ Conflict Detection
+- ✅ Booked Slot Locking
+- ✅ Dynamic Price Calculation
+- ✅ Responsive UI
+- ✅ Modular Django Architecture
+- ✅ Staff Portal
+- ✅ Staff Dashboard
+- ✅ Staff Profile
+- ✅ Staff Schedule
+- ✅ Staff Availability Management
+- ✅ Booking Details Page
+- ✅ Service Start Workflow
+- ✅ Service Completion Workflow
+- ✅ Staff ↔ User Relationship
+- ✅ Role-Based Access Control
+- ✅ Protected Staff Pages
 
 ---
 
-#20. Future Enhancements
+# 20. Future Enhancements
 
-Notifications
-SMS Reminders
-Email Notifications
-WhatsApp Integration
+## Notifications
 
-Billing
-Online Payments
-Invoices
-Payment Tracking
+- SMS Reminders
+- Email Notifications
+- WhatsApp Integration
 
-Analytics
-Revenue Analytics
-Staff Performance
-Booking Analytics
-Customer Analytics
+## Billing
+
+- Online Payments
+- Invoices
+- Payment Tracking
+
+## Analytics
+
+- Revenue Analytics
+- Staff Performance
+- Booking Analytics
+- Customer Analytics
+
+## AI Layer
+
+- Customer Behavior Analysis
+- No-show Prediction
+- Cancellation Prediction
+- Revenue Forecasting
+- AI Recommendations
+- Automation Agents
 
 ---
-AI Layer
-Customer Behavior Analysis
-No-show Prediction
-Cancellation Prediction
-Revenue Forecasting
-AI Recommendations
-Automation Agents
 
----
 # 21. Engineering Evaluation
+
 ## Project Maturity
 
 | Module | Progress |
@@ -478,7 +562,9 @@ Automation Agents
 ### Overall Progress
 
 **≈ 88% MVP Completion**
+
 ---
+
 # 22. Engineering Assessment
 
 The project demonstrates:
@@ -500,6 +586,7 @@ The project demonstrates:
 - Booking Lifecycle Management
 
 ---
+
 # 23. Conclusion
 
 The Beauty Salon Management System has evolved from a simple booking application into a structured salon management platform.
