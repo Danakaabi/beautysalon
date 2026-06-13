@@ -67,7 +67,9 @@ Beauty Salon Management System
 └── salon_project
 
 ---
+
 # 5. Application Modules
+
 
 ## 5.1 Accounts Module
 
