@@ -478,9 +478,9 @@ Overall Progress
 
 ≈ 88% MVP Completion
 ---
-
 # 22. Engineering Assessment
 
+```text
 Normalized Database Design
 One-to-Many Relationships
 Many-to-Many Relationships
@@ -496,6 +496,7 @@ Availability Scheduling Pattern
 Protected Route Pattern
 One-to-One User Mapping
 Booking Lifecycle Management
+```
 
 ---
 # 23. Conclusion
